@@ -12,12 +12,19 @@ const User = require('../../models/User')
 // @access Public
 router.post("/register", (req, res) => {
   // Form validation
+  console.log('\nbackend register');
   console.log(req.body);
   
   const { errors, isValid } = validateRegisterInput(req.body);// Check validation
+
   if (!isValid) {
+    console.log(`isValid: ${isValid}`);
+    console.log(`errors:`);
+    console.log(errors);
+    
     return res.status(400).json(errors);
   }
+
   User.findOne({ email: req.body.email }).then(user => {
     if (user) {
       return res.status(400).json({ email: "Email already exists" });

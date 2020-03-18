@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Schema = mongoose.Schema;// Create Schema
+const Schema = mongoose.Schema; // Create Schema
 const UserSchema = new Schema({
   name: {
     type: String,
@@ -13,8 +13,21 @@ const UserSchema = new Schema({
     type: String,
     required: true
   },
+  phone: {
+    type: String,
+    required: true
+  },
   date: {
     type: Date,
     default: Date.now
+  },
+  points: {
+    type: Number,
+    required: true,
+    default: 0
+  },
+  examDate: {
+    type: Date
   }
-});module.exports = User = mongoose.model("users", UserSchema);
+});
+module.exports = User = mongoose.model("users", UserSchema);
