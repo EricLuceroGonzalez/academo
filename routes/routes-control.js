@@ -43,7 +43,7 @@ postExam = (req, res) => {
       transporter.sendMail({
         from: process.env.mailUser, // sender address
         to: "ericlucerogonzalez@gmail.com", // list of receivers
-        subject: `id: ${req.body.id}, calificacion: ${req.body.grade * 100}`, // Subject line
+        subject: `id: ${req.body.id}, calificacion: ${req.body.grade}`, // Subject line
         html: `<p>Hello Eric. id: ${req.body.id} ha obtenido una calificacion de ${req.body.grade * 100}</p>` // html body
       });
     })
