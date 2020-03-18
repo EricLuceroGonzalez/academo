@@ -15,19 +15,29 @@ const UserSchema = new Schema({
   },
   phone: {
     type: String,
-    required: true
+    required: false
   },
   date: {
     type: Date,
     default: Date.now
   },
-  points: {
-    type: Number,
-    required: true,
-    default: 0
-  },
-  examDate: {
-    type: Date
-  }
+  testInfo: [
+    {
+      points: {
+        type: Number,
+        required: true,
+        default: 0
+      },
+      grade: {
+        type: Number,
+        required: true,
+        default: 0
+      },
+      examDate: {
+        type: Date,
+        required: false
+      }
+    }
+  ]
 });
 module.exports = User = mongoose.model("users", UserSchema);
