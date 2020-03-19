@@ -18,12 +18,14 @@ var transporter = nodemailer.createTransport({
   }
 });
 
+// mongoose.set('useFindAndModify', false);
+
 postExam = (req, res) => {
   newExam = new User(req.body);
   console.log(newExam);
 
   User.findOneAndUpdate(
-    req.body.id,
+    { _id: req.body.theId },
     {
       $push: {
         testInfo: {
@@ -43,8 +45,13 @@ postExam = (req, res) => {
       transporter.sendMail({
         from: process.env.mailUser, // sender address
         to: "ericlucerogonzalez@gmail.com", // list of receivers
-        subject: `id: ${req.body.id}, calificacion: ${req.body.grade}`, // Subject line
-        html: `<p>Hello Eric. id: ${req.body.id} ha obtenido una calificacion de ${req.body.grade * 100}</p>` // html body
+        subject: `Hola, ${req.body.theName}, tu calificacion:`, // Subject line
+        html: `<div>Hola, <b>${req.body.theName}</b>, 
+        <div>tu id: ${
+          req.body.theId
+        }</div> <div>Has obtenido una calificacion de ${req.body.grade.toFixed(
+          2
+        )}</div></div>` // html body
       });
     })
     .catch(error => {
