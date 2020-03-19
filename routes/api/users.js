@@ -57,12 +57,18 @@ router.post("/register", (req, res) => {
                 }
               });
               // NodeMail Send:
-              transporter.sendMail({
-                from: process.env.mailUser, // sender address
-                to: `${req.body.email}`, // list of receivers
-                subject: `Gracias ${req.body.name}. Tu cuenta se ha creado.`, // Subject line
-                html: `<p>Hola, <strong>${req.body.name}</strong>, Tu password es:\n<b>${req.body.password}</b></p>`
-              });
+              transporter.sendMail(
+                {
+                  from: process.env.mailUser, // sender address
+                  to: `${req.body.email}`, // list of receivers
+                  subject: `Gracias ${req.body.name}. Tu cuenta se ha creado.`, // Subject line
+                  html: `<p>Hola, <strong>${req.body.name}</strong>, Tu password es:\n<b>${req.body.password}</b></p>`
+                },
+                (error, info) => {
+                  console.log(error);
+                  console.log(info);
+                }
+              );
             })
             .catch(err => console.log(err));
         });
