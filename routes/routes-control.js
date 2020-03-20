@@ -51,7 +51,8 @@ postExam = (req, res) => {
           req.body.theId
         }</div> <div>Has obtenido una calificacion de ${req.body.grade.toFixed(
           2
-        )}</div></div>` // html body
+        )}</div>
+        </div>` // html body
       });
     })
     .catch(error => {
@@ -61,4 +62,13 @@ postExam = (req, res) => {
       });
     });
 };
-module.exports = { postExam };
+
+getGrades = (req, res) => {
+  User.find()
+    .then(data => {
+      res.status(200).send(data);
+    })
+    .catch(err => res.status(400).send(err));
+};
+
+module.exports = { postExam, getGrades };
