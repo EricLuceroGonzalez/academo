@@ -3,41 +3,28 @@ const Schema = mongoose.Schema; // Create Schema
 const UserSchema = new Schema({
   name: {
     type: String,
-    required: true
+    required: true,
   },
   email: {
     type: String,
-    required: true
+    required: true,
   },
   password: {
     type: String,
-    required: true
+    required: true,
   },
-  phone: {
+  cedula: {
     type: String,
-    required: false
+    required: false,
+  },
+  subject: {
+    type: String,
+    required: true,
   },
   date: {
     type: Date,
-    default: Date.now
+    default: Date.now,
   },
-  testInfo: [
-    {
-      points: {
-        type: Number,
-        required: true,
-        default: 0
-      },
-      grade: {
-        type: Number,
-        required: true,
-        default: 0
-      },
-      examDate: {
-        type: Date,
-        required: false
-      }
-    }
-  ]
+  tests: [{ type: mongoose.Types.ObjectId, ref: "Test" }],
 });
 module.exports = User = mongoose.model("users", UserSchema);
