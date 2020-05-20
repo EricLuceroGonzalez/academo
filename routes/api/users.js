@@ -6,7 +6,7 @@ const keys = require("../../config/keys"); // Load input validation
 const validateRegisterInput = require("../../validation/register");
 const validateLoginInput = require("../../validation/login"); // Load User model
 const User = require("../../models/User");
-
+const Courses = require("../../models/Courses");
 // Import nodemailer
 var nodemailer = require("nodemailer");
 
@@ -28,14 +28,19 @@ router.post("/register", (req, res) => {
     return res.status(400).json(errors);
   }
 
-  User.findOne({ email: req.body.email }).then(user => {
+  User.findOne({ email: req.body.email }).then((user) => {
     if (user) {
       return res.status(400).json({ email: "Email already exists" });
     } else {
       const newUser = new User({
-        name: req.body.name,
+        name: {
+          firstName: req.body.firstName,
+          lastName: req.body.lastName,
+        },
         email: req.body.email,
-        password: req.body.password
+        password: req.body.password,
+        identification: req.body.identification,
+        subject: req.body.subject,
       });
       // Hash password before saving in database
       bcrypt.genSalt(10, (err, salt) => {
@@ -45,24 +50,72 @@ router.post("/register", (req, res) => {
           newUser.password = hash;
           newUser
             .save()
-            .then(user => {
+            .then((user) => {
               res.json(user);
+              Courses.findOneAndUpdate(
+                { _id: user.subject },
+                { $push: { enroll: user.id } }
+              )
+                .then((subjc) => console.log(`Subjc added: ${subjc}`))
+                .catch((err) => console.log(`Subjc err: ${err}`));
               // -----
               // Define transporter to login to mail sender account
               var transporter = nodemailer.createTransport({
                 service: "gmail",
                 auth: {
                   user: process.env.mailUser,
-                  pass: process.env.mailPass
-                }
+                  pass: process.env.mailPass,
+                },
               });
               // NodeMail Send:
               transporter.sendMail(
                 {
                   from: process.env.mailUser, // sender address
                   to: `${req.body.email}`, // list of receivers
-                  subject: `Gracias ${req.body.name}. Tu cuenta se ha creado.`, // Subject line
-                  html: `<p>Hola, <strong>${req.body.name}</strong>, Tu password es:\n<b>${req.body.password}</b></p>`
+                  subject: `Gracias ${req.body.firstName}. Tu cuenta se ha creado.`, // Subject line
+                  html: `<h3
+                  style="
+                    text-shadow: 3px 2px 1px black;
+                    color: white;
+                    background-color: rgb(116, 35, 153);
+                    font-weight: bold;
+                    padding: 7px 8px;
+                    width: 90%;
+                    box-shadow: 6px 6px aqua;
+                  "
+                >
+                  Academo
+                  <span role="img" aria-label="rocket">
+                    🚀
+                  </span>
+                </h3>
+                <div
+                  style="
+                    background-color: rgb(226, 225, 226);
+                    border: 2px solid rgb(116, 35, 153);
+                    width: 90%;
+                    font-weight: 700;
+                    padding: 1px 5px;
+                  "
+                >
+                  <p>
+                    Hola,
+                    <strong style="background-color: rgb(40, 210, 105);">
+                      ${req.body.firstName}</strong
+                    >, Tu password es:<strong style="background-color: rgb(40, 210, 105);"
+                      >${req.body.password}</strong
+                    >
+                  </p>
+                  <div style="margin-top: 12%;">
+                    <p>Gracias por crear tu cuenta.</p>
+                  </div>
+                  <div style="margin-top: 12%; color: rgb(116, 35, 153);">
+                    <p>Cualquier consulta escribe al correo:</p>
+                    <p>
+                      ericlucero501@gmail.com
+                    </p>
+                  </div>
+                </div>`,
                 },
                 (error, info) => {
                   console.log(error);
@@ -70,7 +123,7 @@ router.post("/register", (req, res) => {
                 }
               );
             })
-            .catch(err => console.log(err));
+            .catch((err) => console.log(err));
         });
       });
     }
@@ -88,31 +141,31 @@ router.post("/login", (req, res) => {
   }
   const email = req.body.email;
   const password = req.body.password; // Find user by email
-  User.findOne({ email }).then(user => {
+  User.findOne({ email }).then((user) => {
     // Check if user exists
     if (!user) {
       return res.status(404).json({ emailnotfound: "Email not found" });
     } // Check password
-    bcrypt.compare(password, user.password).then(isMatch => {
+    bcrypt.compare(password, user.password).then((isMatch) => {
       if (isMatch) {
         // User matched
 
         // Create JWT Payload
         const payload = {
           id: user.id,
-          name: user.name
+          name: user.name,
         };
         // Sign token
         jwt.sign(
           payload,
           keys.secretOrKey,
           {
-            expiresIn: 7200 // 2h in seconds
+            expiresIn: 7200, // 2h in seconds
           },
           (err, token) => {
             res.json({
               success: true,
-              token: "Bearer " + token
+              token: "Bearer " + token,
             });
           }
         );

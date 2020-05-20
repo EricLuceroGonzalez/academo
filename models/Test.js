@@ -1,44 +1,54 @@
 const mongoose = require("mongoose");
-const Schema = mongoose.Schema; // Create Schema
+const Schema = mongoose.Schema;
+
+// Create Schema
 const TestSchema = new Schema({
-  questionName: {
-    type: String,
-    required: true,
-  },
-  question: {
-    type: String,
-    required: true,
-  },
-  values: [
+  questions: [
     {
-      type: String,
-      required: true,
+      isEquation: { type: Boolean, required: true },
+      equation: { type: String, required: false },
+      questionName: {
+        type: String,
+        required: true,
+      },
+      question: {
+        type: String,
+        required: true,
+      },
+      options: [
+        {
+          isEquation: { type: Boolean, required: true },
+          equation: { type: String, required: false },
+          text: { type: String, required: false },
+        },
+      ],
+      answer: {
+        isEquation: { type: Boolean, required: true },
+        equation: { type: String, required: false },
+        text: { type: String, required: false },
+      },
+      value: {
+        type: Number,
+        required: true,
+        default: 1,
+      },
+      pts: {
+        type: Number,
+        required: true,
+        default: 0,
+      },
     },
   ],
-  selected: {
-    type: String,
-    required: false,
-    default: "",
-  },
-  answer: {
-    type: String,
-    required: true,
-  },
-  pts: {
-    type: Number,
-    required: true,
-    default: 0,
-  },
-  grade: {
-    type: Number,
-    required: true,
-    default: 0,
-  },
   examDate: {
     type: Date,
     required: false,
   },
+  evaluation: { type: String, required: true },
+  description: { type: String, required: true },
+  instructions: { type: String, required: true },
+  testName: { type: String, required: true },
+  subject: { type: mongoose.Types.ObjectId, ref: "Course", required: true },
   users: [{ type: mongoose.Types.ObjectId, ref: "User" }],
 });
 
-module.exports = Test = mongoose.model("tests", TestSchema);
+module.exports = Test = mongoose.model("Test", TestSchema);
