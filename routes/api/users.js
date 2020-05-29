@@ -30,7 +30,7 @@ router.post("/register", (req, res) => {
 
   User.findOne({ email: req.body.email }).then((user) => {
     if (user) {
-      return res.status(400).json({ email: "Email already exists" });
+      return res.status(400).json({ email: "Email already exists. Please login." });
     } else {
       const newUser = new User({
         name: {
@@ -144,7 +144,7 @@ router.post("/login", (req, res) => {
   User.findOne({ email }).then((user) => {
     // Check if user exists
     if (!user) {
-      return res.status(404).json({ emailnotfound: "Email not found" });
+      return res.status(404).json({ emailnotfound: "Email not found. Please Register first!" });
     } // Check password
     bcrypt.compare(password, user.password).then((isMatch) => {
       if (isMatch) {
