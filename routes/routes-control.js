@@ -8,7 +8,7 @@ const keys = require("../config/keys");
 const HttpError = require("../models/http-error");
 const User = require("../models/User");
 const Test = require("../models/Test");
-const Courses = require("../models/Courses");
+const Course = require("../models/Courses");
 // Import nodemailer
 var nodemailer = require("nodemailer");
 // Define transporter to login to mail sender account
@@ -153,56 +153,30 @@ postExam = async (req, res, next) => {
   }
 };
 
-// To post a test:
-postTest = (req, res) => {
-  newTest = new Test(req.body);
-  newTest
-    .save()
-    .then((theTest) => {
-      console.log(`The test: \n ${theTest._id} \n ${theTest.subject}`);
-
-      Courses.findOneAndUpdate(
-        { _id: theTest.subject },
-        { $push: { tests: theTest.id } }
-      )
-        .then((subjc) => console.log(`Subjc added: ${subjc}`))
-        .catch((err) => console.log(`Subjc err: ${err}`));
-
-      res.status(200).json({
-        success: true,
-        message: `Test ${theTest.id} Submitted!`,
-      });
-    })
-    .catch((err) => {
-      res.status(400).json({
-        success: false,
-        message: `Error on saving! \n ${err}`,
-      });
-    });
-};
-
 postCourse = (req, res) => {
-  console.log(req.bodycl);
-  newCourse = new Courses(req.body);
+  // console.log(req.body);
 
-  newCourse
-    .save()
-    .then(
-      res.status(200).json({
-        success: true,
-        message: "Submitted!",
-      })
-    )
-    .catch(
-      res.status(400).json({
-        success: false,
-        message: "Error on saving!",
-      })
+  newCourse = new Course( req.body);
+
+  try {
+    newCourse.save();
+  } catch (err) {
+    const error = new HttpError(
+      "Creating place failed. Please try again.",
+      500
     );
+    res.status(500).json({ message: "Some error ocurred. Please try again." });
+    return next(error);
+  }
+
+  res.status(200).json({
+    course: newCourse,
+    message: "Course Submitted!",
+  });
 };
 
 getCourses = (req, res) => {
-  Courses.find()
+  Course.find()
     .then((data) => {
       res.status(200).send(data);
     })
@@ -221,10 +195,10 @@ getCourseDashboard = (req, res) => {
   );
   user = req.params.usr;
 
-  Courses.find({ enroll: user })
+  Course.find({ enroll: user })
     .populate("tests")
     .then((data) => {
-      console.log(data);
+      // console.log(data);
       console.log(
         "2) " +
           today.getHours() +
@@ -246,8 +220,36 @@ getCourseDashboard = (req, res) => {
     .catch((err) => res.status(400).send(err));
 };
 
+// To post a test:
+postNewTest = (req, res) => {
+  newTest = new Test(req.body);
+  newTest
+    .save()
+    .then((theTest) => {
+      // console.log(`The test: \n ${theTest._id} \n ${theTest.subject}`);
+
+      Course.findOneAndUpdate(
+        { _id: theTest.subject },
+        { $push: { tests: theTest.id } }
+      )
+        .then((subjc) => console.log(`Subjc added: ${subjc}`))
+        .catch((err) => console.log(`Subjc err: ${err}`));
+
+      res.status(200).json({
+        success: true,
+        message: `Test ${theTest.id} Submitted!`,
+      });
+    })
+    .catch((err) => {
+      res.status(400).json({
+        success: false,
+        message: `Error on saving! \n ${err}`,
+      });
+    });
+};
+
 getATest = (req, res) => {
-  console.log(req.params.name);
+  // console.log(req.params.name);
 
   Test.findOne({ testName: req.params.name })
     .then((data) => {
@@ -268,8 +270,8 @@ module.exports = {
   getGrades,
   getCourses,
   postExam,
-  postTest,
   postCourse,
+  postNewTest,
   getCourseDashboard,
   getATest,
 };

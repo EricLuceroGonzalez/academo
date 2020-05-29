@@ -8,7 +8,7 @@ router.get("/courseDashboard/:usr", ctrl.getCourseDashboard);
 router.get("/getATest/:name", ctrl.getATest);
 router.get("/getAllCourses", ctrl.getCourses);
 router.post("/test", ctrl.postExam);
-router.post("/newTest", ctrl.postTest);
+router.post("/newTest", ctrl.postNewTest);
 router.post("/newCourse", ctrl.postCourse);
 
 module.exports = router;
