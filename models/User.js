@@ -30,14 +30,11 @@ const UserSchema = new Schema({
   },
   testInfo: [
     {
-      tests: { type: mongoose.Types.ObjectId, ref: "Test" },
-      answers: [
-        {
-          qst: { type: String, required: false },
-          ans: { type: String, required: false },
-        },
-      ],
-      points: {
+      test: { type: mongoose.Types.ObjectId, ref: "Test" },
+      testName: {type: String, required: false},
+      allAns: { type: Array, required: false },
+      ansQuest: { type: Array, required: false },
+      totalPts: {
         type: Number,
         required: true,
         default: 0,

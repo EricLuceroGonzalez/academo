@@ -71,7 +71,7 @@ router.post("/register", (req, res) => {
               transporter.sendMail(
                 {
                   from: process.env.mailUser, // sender address
-                  to: `${req.body.email}`, // list of receivers
+                  to: newUser.email, // list of receivers
                   subject: `Gracias ${req.body.firstName}. Tu cuenta se ha creado.`, // Subject line
                   html: `<h3
                   style="
@@ -106,7 +106,7 @@ router.post("/register", (req, res) => {
                       >${req.body.password}</strong
                     >
                   </p>
-                  <div style="margin-top: 12%;">
+                  <div style="margin-top: 52%;">
                     <p>Gracias por crear tu cuenta.</p>
                   </div>
                   <div style="margin-top: 12%; color: rgb(116, 35, 153);">
