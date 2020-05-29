@@ -45,6 +45,7 @@ const TestSchema = new Schema({
   },
   evaluation: { type: String, required: true },
   description: { type: String, required: true },
+  contents: { type: String, required: true },
   instructions: { type: String, required: true },
   testName: { type: String, required: true },
   subject: { type: mongoose.Types.ObjectId, ref: "Course", required: true },
