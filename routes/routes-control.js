@@ -35,6 +35,9 @@ postExam = async (req, res, next) => {
     grade,
     allAns,
     ansQuest,
+    allPts,
+    goodAns,
+    goodQuest,
   } = req.body;
 
   let user;
@@ -87,6 +90,9 @@ postExam = async (req, res, next) => {
     grade: grade,
     allAns: allAns,
     ansQuest: ansQuest,
+    allPts: allPts,
+    goodAns: goodAns,
+    goodQuest: goodQuest,
   };
 
   const sendMail = async (user) => {
@@ -156,7 +162,7 @@ postExam = async (req, res, next) => {
 postCourse = (req, res) => {
   // console.log(req.body);
 
-  newCourse = new Course( req.body);
+  newCourse = new Course(req.body);
 
   try {
     newCourse.save();
@@ -248,22 +254,23 @@ postNewTest = (req, res) => {
     });
 };
 
-getATest = (req, res) => {
-  // console.log(req.params.name);
-
-  Test.findOne({ testName: req.params.name })
-    .then((data) => {
-      res.status(200).send(data);
-    })
-    .catch((err) => res.status(400).send(err));
-};
-
 getGrades = (req, res) => {
   User.find()
     .then((data) => {
       res.status(200).send(data);
     })
     .catch((err) => res.status(400).send(err));
+};
+
+getATest = async (req, res, next) => {
+  try {
+    let test;
+    test = await Test.findById(req.params.id);
+    res.status(200).json({ test });
+  } catch (err) {
+    console.info("next()");
+    next();
+  }
 };
 
 module.exports = {
