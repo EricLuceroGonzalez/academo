@@ -144,7 +144,29 @@ postExam = async (req, res, next) => {
   try {
     const sess = await mongoose.startSession();
     sess.startTransaction();
-    user.testInfo.push(testInfo);
+    if (user.testInfo.length === 0) {
+      user.testInfo.push(testInfo);
+    } else {
+      // Function that returns -1 if theres is no value on an array
+      const findIt = async () => {
+        for (let i = 0; i < user.testInfo.length; i++) {
+          if (user.testInfo[i]["test"].toString() === testId) {
+            return i;
+          }
+        }
+        return -1;
+      };
+      let index = await findIt();
+      try {
+        if (index === -1) {
+          user.testInfo.push(testInfo);
+        } else {
+          user.testInfo[index] = testInfo;
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
     await user.save({ session: sess }); // ---> Update now with the place
     await sess.commitTransaction(); // ---> Changes will commit
     sendMail(user);
@@ -191,37 +213,22 @@ getCourses = (req, res) => {
 
 getCourseDashboard = (req, res) => {
   let today = new Date();
-  console.log(
-    "1) " +
-      today.getHours() +
-      ":" +
-      today.getMinutes() +
-      ":" +
-      today.getSeconds()
-  );
+  // console.log(
+  //   "1) " +
+  //     today.getHours() +
+  //     ":" +
+  //     today.getMinutes() +
+  //     ":" +
+  //     today.getSeconds()
+  // );
   user = req.params.usr;
 
   Course.find({ enroll: user })
     .populate("tests")
     .then((data) => {
       // console.log(data);
-      console.log(
-        "2) " +
-          today.getHours() +
-          ":" +
-          today.getMinutes() +
-          ":" +
-          today.getSeconds()
-      );
+
       res.status(200).send(data);
-      console.log(
-        "3) " +
-          today.getHours() +
-          ":" +
-          today.getMinutes() +
-          ":" +
-          today.getSeconds()
-      );
     })
     .catch((err) => res.status(400).send(err));
 };
