@@ -44,6 +44,7 @@ const TestSchema = new Schema({
     required: false,
   },
   evaluation: { type: String, required: true },
+  disabled: { type: Boolean, required: true, default: false },
   description: { type: String, required: true },
   contents: { type: String, required: true },
   instructions: { type: String, required: true },

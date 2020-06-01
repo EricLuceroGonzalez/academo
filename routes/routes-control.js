@@ -279,6 +279,23 @@ getATest = async (req, res, next) => {
     next();
   }
 };
+getUserTest = async (req, res, next) => {
+  console.log('\n---------------------');
+  
+  const userId = req.params.id;
+  console.log(userId);
+  let tests = []
+  try {
+    user = await User.findById(req.params.id);
+    user.testInfo.map((item) => {
+      tests.push({grd: item.grade, testId: item.test})
+    });
+    res.status(200).json({ response: tests });
+  } catch (err) {
+    console.info("next()");
+    next();
+  }
+};
 
 module.exports = {
   getGrades,
@@ -288,4 +305,5 @@ module.exports = {
   postNewTest,
   getCourseDashboard,
   getATest,
+  getUserTest,
 };

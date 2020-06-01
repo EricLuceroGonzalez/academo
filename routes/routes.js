@@ -6,10 +6,10 @@ const router = express.Router();
 router.get("/getAllGrades", ctrl.getGrades);
 router.get("/courseDashboard/:usr", ctrl.getCourseDashboard);
 router.get("/getAllCourses", ctrl.getCourses);
+router.get("/getATest/:id", ctrl.getATest);
+router.get("/userTest/:id", ctrl.getUserTest);
 router.post("/test", ctrl.postExam);
 router.post("/newTest", ctrl.postNewTest);
 router.post("/newCourse", ctrl.postCourse);
-router.get("/getATest/:id", ctrl.getATest);
-
 
 module.exports = router;
