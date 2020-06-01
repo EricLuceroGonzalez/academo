@@ -98,7 +98,7 @@ postExam = async (req, res, next) => {
   const sendMail = async (user) => {
     await transporter.sendMail({
       from: process.env.mailUser, // sender address
-      to: user.email, // list of receivers
+      to: user.email, // list of receivers/
       subject: `Academo. ${user.name.firstName}, hemos recibido tu calificacion 👍`, // Subject line
       html: `<h3
                   style="
