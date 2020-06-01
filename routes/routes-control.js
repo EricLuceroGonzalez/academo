@@ -233,7 +233,7 @@ getCourseDashboard = (req, res) => {
     .catch((err) => res.status(400).send(err));
 };
 
-// To post a test:
+// To post a test to a course:
 postNewTest = (req, res) => {
   newTest = new Test(req.body);
   newTest

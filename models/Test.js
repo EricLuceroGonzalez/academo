@@ -45,6 +45,7 @@ const TestSchema = new Schema({
   },
   evaluation: { type: String, required: true },
   disabled: { type: Boolean, required: true, default: false },
+  uploadDate: { type: Date, required: true, default: Date.now },
   description: { type: String, required: true },
   contents: { type: String, required: true },
   instructions: { type: String, required: true },
