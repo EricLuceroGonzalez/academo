@@ -211,26 +211,44 @@ getCourses = (req, res) => {
     .catch((err) => res.status(400).send(err));
 };
 
-getCourseDashboard = (req, res) => {
-  let today = new Date();
-  // console.log(
-  //   "1) " +
-  //     today.getHours() +
-  //     ":" +
-  //     today.getMinutes() +
-  //     ":" +
-  //     today.getSeconds()
-  // );
+getCourseDashboard = async (req, res, next) => {
+  console.log("\n-------------------------------------");
+
   user = req.params.usr;
 
-  Course.find({ enroll: user })
-    .populate("tests")
-    .then((data) => {
-      // console.log(data);
+  let usrTests = [];
+  try {
+    courses = await Course.find({ enroll: user }).populate("tests");
+    user = await User.findById(user);
+    user.testInfo.map((item) => {
+      console.log(`usrTest: ${item.test}`);
+      usrTests.push({ grd: item.grade, testId: item.test });
+    });
+    res.status(200).json({ allTests: courses[0], usrTests: usrTests });
+  } catch (err) {
+    console.info("next()");
+    res.status(400).send(err);
+    next();
+  }
+};
 
-      res.status(200).send(data);
-    })
-    .catch((err) => res.status(400).send(err));
+getUserTest = async (req, res, next) => {
+  console.log("\n---------------------");
+
+  const userId = req.params.id;
+  console.log(`id: ${userId}`);
+  let tests = [];
+  try {
+    user = await User.findById(userId);
+    user.testInfo.map((item) => {
+      console.log(item);
+      tests.push({ grd: item.grade, testId: item.test });
+    });
+    res.status(200).json({ response: tests });
+  } catch (err) {
+    console.info("next()");
+    next();
+  }
 };
 
 // To post a test to a course:
@@ -261,6 +279,18 @@ postNewTest = (req, res) => {
     });
 };
 
+getUserGrades = async (req, res, next) => {
+  userId = req.params.id;
+  console.log(`userId: ${userId}`);
+  let user;
+  try {
+    user = await User.findById(userId);
+    res.status(200).json({ response: user.testInfo });
+  } catch (err) {
+    res.status(500).json({ error: "Error 500. Try again." });
+  }
+};
+
 getGrades = (req, res) => {
   User.find()
     .then((data) => {
@@ -279,23 +309,6 @@ getATest = async (req, res, next) => {
     next();
   }
 };
-getUserTest = async (req, res, next) => {
-  console.log('\n---------------------');
-  
-  const userId = req.params.id;
-  console.log(userId);
-  let tests = []
-  try {
-    user = await User.findById(req.params.id);
-    user.testInfo.map((item) => {
-      tests.push({grd: item.grade, testId: item.test})
-    });
-    res.status(200).json({ response: tests });
-  } catch (err) {
-    console.info("next()");
-    next();
-  }
-};
 
 module.exports = {
   getGrades,
@@ -306,4 +319,5 @@ module.exports = {
   getCourseDashboard,
   getATest,
   getUserTest,
+  getUserGrades,
 };
