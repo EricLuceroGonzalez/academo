@@ -1,15 +1,14 @@
 const mongoose = require("mongoose");
-mongoose.set('useFindAndModify', false);
+mongoose.set("useFindAndModify", false);
 // ... manage URL of mongo-atlas db (from cluster) *sended to env*
 // connect that mongoose with Mongo cluster
-db_uri = process.env.DB_URI;
 
 // console.log(db_uri);
 
 mongoose.connect(
-  db_uri,
+  process.env.DB_URI,
   { useNewUrlParser: true, useUnifiedTopology: true },
-  err => {
+  (err) => {
     if (!err) {
       console.log("MongoDB - Conexion exitosa :):");
     } else {
