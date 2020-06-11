@@ -5,10 +5,35 @@ const bcrypt = require("bcryptjs");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const keys = require("../config/keys");
+const cloudinary = require("cloudinary");
 const HttpError = require("../models/http-error");
 const User = require("../models/User");
 const Test = require("../models/Test");
 const Course = require("../models/Courses");
+const Image = require("../models/Image-Model");
+const multer = require('multer');
+
+// Image handle
+const storage = multer.diskStorage({
+  filename: function(req, file, callback) {
+    callback(null, Date.now() + file.originalname);
+  }
+});
+const imageFilter = function(req, file, cb) {
+  // accept image files only
+  if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/i)) {
+    return cb(new Error("Only image files are accepted!"), false);
+  }
+  cb(null, true);
+};
+const upload = multer({ storage: storage, fileFilter: imageFilter });
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
 // Import nodemailer
 var nodemailer = require("nodemailer");
 // Define transporter to login to mail sender account
@@ -310,14 +335,41 @@ getATest = async (req, res, next) => {
   }
 };
 
+getAllImages = async (req, res, next) => {
+  console.log('\n *************** show Images ***************');
+  try {
+    const allImages = await Image.find();
+    console.log(allImages);    
+    res.status(200).json(allImages);
+  } catch (err) {
+    next();
+  }
+};
+
+postImage = async (req, res, next) => {
+  console.log('\n *************** post Image ***************');
+  
+  cloudinary.v2.uploader.upload(req.file.path, async (err, res) => {
+    if (err) {
+      req.json(err.message);
+    }
+    req.body.image = res.secure_url;
+    req.body.imageId = res.public_id;
+
+    await Image.create(req.body)
+  });
+};
+
 module.exports = {
   getGrades,
   getCourses,
   postExam,
   postCourse,
   postNewTest,
+  postImage,
   getCourseDashboard,
   getATest,
   getUserTest,
   getUserGrades,
+  getAllImages,
 };
