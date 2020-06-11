@@ -7,7 +7,7 @@ mongoose.set("useFindAndModify", false);
 // process.env.DB_URI,
 // process.env.DB_TEST,
 mongoose.connect(
-  process.env.DB_TEST,
+  process.env.DB_URI,
   { useNewUrlParser: true, useUnifiedTopology: true },
   (err) => {
     if (!err) {
