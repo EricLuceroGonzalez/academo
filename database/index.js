@@ -4,10 +4,11 @@ mongoose.set("useFindAndModify", false);
 // connect that mongoose with Mongo cluster
 
 // console.log(db_uri);
-// process.env.DB_URI,
-// process.env.DB_TEST,
+prod_db = process.env.DB_URI,
+test_db = process.env.DB_TEST,
 mongoose.connect(
-  process.env.DB_URI,
+  prod_db,
+  // test_db,
   { useNewUrlParser: true, useUnifiedTopology: true },
   (err) => {
     if (!err) {

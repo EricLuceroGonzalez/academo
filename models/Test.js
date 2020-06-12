@@ -6,6 +6,7 @@ const TestSchema = new Schema({
   questions: [
     {
       isEquation: { type: Boolean, required: true },
+      isInline: { type: Boolean, required: true, default: true },
       equation: { type: String, required: false },
       questionName: {
         type: String,
@@ -18,6 +19,7 @@ const TestSchema = new Schema({
       options: [
         {
           isEquation: { type: Boolean, required: true },
+          isInline: { type: Boolean, required: true, default: true },
           equation: { type: String, required: false },
           text: { type: String, required: false },
         },
