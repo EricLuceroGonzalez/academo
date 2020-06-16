@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 const TestSchema = new Schema({
   questions: [
     {
-      isEquation: { type: Boolean, required: true },
+      isEquation: { type: Boolean, required: true, default: false },
       isInline: { type: Boolean, required: true, default: true },
       equation: { type: String, required: false },
       questionName: {
@@ -16,16 +16,8 @@ const TestSchema = new Schema({
         type: String,
         required: true,
       },
-      options: [
-        {
-          isEquation: { type: Boolean, required: true },
-          isInline: { type: Boolean, required: true, default: true },
-          equation: { type: String, required: false },
-          text: { type: String, required: false },
-        },
-      ],
       answer: {
-        isEquation: { type: Boolean, required: true },
+        isEquation: { type: Boolean, required: true, default: false },
         equation: { type: String, required: false },
         text: { type: String, required: false },
       },
@@ -39,6 +31,14 @@ const TestSchema = new Schema({
         required: true,
         default: 0,
       },
+      options: [
+        {
+          isEquation: { type: Boolean, required: true, default: false },
+          isInline: { type: Boolean, required: true, default: true },
+          equation: { type: String, required: false },
+          text: { type: String, required: false },
+        },
+      ],
     },
   ],
   examDate: {
