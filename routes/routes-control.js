@@ -11,15 +11,15 @@ const User = require("../models/User");
 const Test = require("../models/Test");
 const Course = require("../models/Courses");
 const Image = require("../models/Image-Model");
-const multer = require('multer');
+const multer = require("multer");
 
 // Image handle
 const storage = multer.diskStorage({
-  filename: function(req, file, callback) {
+  filename: function (req, file, callback) {
     callback(null, Date.now() + file.originalname);
-  }
+  },
 });
-const imageFilter = function(req, file, cb) {
+const imageFilter = function (req, file, cb) {
   // accept image files only
   if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/i)) {
     return cb(new Error("Only image files are accepted!"), false);
@@ -31,7 +31,7 @@ const upload = multer({ storage: storage, fileFilter: imageFilter });
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
 // Import nodemailer
@@ -189,7 +189,7 @@ postExam = async (req, res, next) => {
           user.testInfo[index] = testInfo;
         }
       } catch (err) {
-        console.log(err);
+        // console.log(err);
       }
     }
     await user.save({ session: sess }); // ---> Update now with the place
@@ -207,7 +207,7 @@ postExam = async (req, res, next) => {
 };
 
 postCourse = (req, res) => {
-  // console.log(req.body);
+  // // console.log(req.body);
 
   newCourse = new Course(req.body);
 
@@ -237,41 +237,40 @@ getCourses = (req, res) => {
 };
 
 getCourseDashboard = async (req, res, next) => {
-  console.log("\n-------------------------------------");
-
   user = req.params.usr;
+  // console.log(`user: ${user}`);
 
   let usrTests = [];
   try {
     courses = await Course.find({ enroll: user }).populate("tests");
     user = await User.findById(user);
     user.testInfo.map((item) => {
-      console.log(`usrTest: ${item.test}`);
+      // // console.log(`usrTest: ${item.test}`);
       usrTests.push({ grd: item.grade, testId: item.test });
     });
     res.status(200).json({ allTests: courses[0], usrTests: usrTests });
   } catch (err) {
-    console.info("next()");
+    // console.info("next()");
     res.status(400).send(err);
     next();
   }
 };
 
 getUserTest = async (req, res, next) => {
-  console.log("\n---------------------");
+  // console.log("\n---------------------");
 
   const userId = req.params.id;
-  console.log(`id: ${userId}`);
+  // console.log(`id: ${userId}`);
   let tests = [];
   try {
     user = await User.findById(userId);
     user.testInfo.map((item) => {
-      console.log(item);
+      // console.log(item);
       tests.push({ grd: item.grade, testId: item.test });
     });
     res.status(200).json({ response: tests });
   } catch (err) {
-    console.info("next()");
+    // console.info("next()");
     next();
   }
 };
@@ -282,14 +281,14 @@ postNewTest = (req, res) => {
   newTest
     .save()
     .then((theTest) => {
-      // console.log(`The test: \n ${theTest._id} \n ${theTest.subject}`);
+      // // console.log(`The test: \n ${theTest._id} \n ${theTest.subject}`);
 
       Course.findOneAndUpdate(
         { _id: theTest.subject },
         { $push: { tests: theTest.id } }
       )
-        .then((subjc) => console.log(`Subjc added: ${subjc}`))
-        .catch((err) => console.log(`Subjc err: ${err}`));
+        .then((subjc) => // console.log(`Subjc added: ${subjc}`))
+        .catch((err) => // console.log(`Subjc err: ${err}`));
 
       res.status(200).json({
         success: true,
@@ -306,13 +305,34 @@ postNewTest = (req, res) => {
 
 getUserGrades = async (req, res, next) => {
   userId = req.params.id;
-  console.log(`userId: ${userId}`);
+  // // console.log(`userId: ${userId}`);
   let user;
-  try {
-    user = await User.findById(userId);
-    res.status(200).json({ response: user.testInfo });
-  } catch (err) {
-    res.status(500).json({ error: "Error 500. Try again." });
+  let testAnswers = [];
+  user = await User.findById(userId);
+  if (user) {
+    ids = user.testInfo.map((item, i) => {
+      // // console.log(`test id: ${item.test}`);
+      return item.test;
+    });
+    records = await Test.find().where("_id").in(ids).exec();
+    if (records) {
+      let test = [{ amount: [], answers: [] }];
+      records.map((item) => {
+        let newTest = { amount: "", answers: [] };
+        item.questions.map((item) => {
+          newTest.answers.push(item.answer);
+        });
+        newTest.amount = item.questions.length;
+        testAnswers.push(newTest);
+      });
+    }
+    try {
+      res
+        .status(200)
+        .json({ testInfo: user.testInfo, testAnswers: testAnswers });
+    } catch (err) {
+      res.status(500).json({ error: "Error 500. Try again." });
+    }
   }
 };
 
@@ -330,16 +350,16 @@ getATest = async (req, res, next) => {
     test = await Test.findById(req.params.id);
     res.status(200).json({ test });
   } catch (err) {
-    console.info("next()");
+    // // console.info("next()");
     next();
   }
 };
 
 getAllImages = async (req, res, next) => {
-  console.log('\n *************** show Images ***************');
+  // console.log("\n *************** show Images ***************");
   try {
     const allImages = await Image.find();
-    console.log(allImages);    
+    // console.log(allImages);
     res.status(200).json(allImages);
   } catch (err) {
     next();
@@ -347,8 +367,8 @@ getAllImages = async (req, res, next) => {
 };
 
 postImage = async (req, res, next) => {
-  console.log('\n *************** post Image ***************');
-  
+  // console.log("\n *************** post Image ***************");
+
   cloudinary.v2.uploader.upload(req.file.path, async (err, res) => {
     if (err) {
       req.json(err.message);
@@ -356,8 +376,30 @@ postImage = async (req, res, next) => {
     req.body.image = res.secure_url;
     req.body.imageId = res.public_id;
 
-    await Image.create(req.body)
+    await Image.create(req.body);
   });
+};
+
+updateTest = async (req, res, next) => {
+  testId = req.params.id;
+  testUpdt = await Test.findById(testId);
+  if (testUpdt) {
+    // newTest = new Test(req.body);
+    // console.log("Found test");
+    try {
+      updatedTest = await Test.findByIdAndUpdate(req.params.id, {
+        $set: req.body,
+      });
+      // console.log("updated!");
+      res.status(200).json({ updateTest: updateTest });
+    } catch (err) {
+      res.status(400).json({
+        success: false,
+        message: `Error on saving! \n ${err}`,
+      });
+      next();
+    }
+  }
 };
 
 module.exports = {
@@ -372,4 +414,5 @@ module.exports = {
   getUserTest,
   getUserGrades,
   getAllImages,
+  updateTest,
 };
