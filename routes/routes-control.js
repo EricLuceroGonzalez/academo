@@ -287,8 +287,8 @@ postNewTest = (req, res) => {
         { _id: theTest.subject },
         { $push: { tests: theTest.id } }
       )
-        .then((subjc) => // console.log(`Subjc added: ${subjc}`))
-        .catch((err) => // console.log(`Subjc err: ${err}`));
+        .then((subjc) => console.log(`Subjc added: ${subjc}`))
+        .catch((err) => console.log(`Subjc err: ${err}`));
 
       res.status(200).json({
         success: true,
