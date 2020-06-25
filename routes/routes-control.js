@@ -316,12 +316,13 @@ getUserGrades = async (req, res, next) => {
     });
     records = await Test.find().where("_id").in(ids).exec();
     if (records) {
-      let test = [{ amount: [], answers: [] }];
+      // let test = [{ name: '', amount: [], answers: [] }];
       records.map((item) => {
-        let newTest = { amount: "", answers: [] };
+        let newTest = { name: '', amount: "", answers: [] };
         item.questions.map((item) => {
           newTest.answers.push(item.answer);
         });
+        newTest.name = item.testName
         newTest.amount = item.questions.length;
         testAnswers.push(newTest);
       });
@@ -331,7 +332,7 @@ getUserGrades = async (req, res, next) => {
         .status(200)
         .json({ testInfo: user.testInfo, testAnswers: testAnswers });
     } catch (err) {
-      res.status(500).json({ error: "Error 500. Try again." });
+      res.status(500).json({ error: "Error 500. Try again. We cant return your grades at the moment." });
     }
   }
 };
