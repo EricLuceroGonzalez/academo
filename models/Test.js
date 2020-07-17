@@ -5,6 +5,7 @@ const Schema = mongoose.Schema;
 const TestSchema = new Schema({
   questions: [
     {
+      image: {type: String, required: false },
       isEquation: { type: Boolean, required: true, default: false },
       isInline: { type: Boolean, required: true, default: true },
       equation: { type: String, required: false },
