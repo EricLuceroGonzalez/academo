@@ -318,11 +318,11 @@ getUserGrades = async (req, res, next) => {
     if (records) {
       // let test = [{ name: '', amount: [], answers: [] }];
       records.map((item) => {
-        let newTest = { name: '', amount: "", answers: [] };
+        let newTest = { name: "", amount: "", answers: [] };
         item.questions.map((item) => {
           newTest.answers.push(item.answer);
         });
-        newTest.name = item.testName
+        newTest.name = item.testName;
         newTest.amount = item.questions.length;
         testAnswers.push(newTest);
       });
@@ -332,7 +332,10 @@ getUserGrades = async (req, res, next) => {
         .status(200)
         .json({ testInfo: user.testInfo, testAnswers: testAnswers });
     } catch (err) {
-      res.status(500).json({ error: "Error 500. Try again. We cant return your grades at the moment." });
+      res.status(500).json({
+        error:
+          "Error 500. Try again. We cant return your grades at the moment.",
+      });
     }
   }
 };
@@ -403,6 +406,22 @@ updateTest = async (req, res, next) => {
   }
 };
 
+getACourse = async (req, res, next) => {
+  courseId = req.params.id;
+  console.log(courseId);
+
+  try {
+    myCourse = await Course.findById(courseId);
+    res.status(200).json({ tests: myCourse.tests });
+  } catch (err) {
+    res.status(400).json({
+      success: false,
+      message: `No course found! \n ${err}`,
+    });
+    next();
+  }
+};
+
 module.exports = {
   getGrades,
   getCourses,
@@ -412,6 +431,7 @@ module.exports = {
   postImage,
   getCourseDashboard,
   getATest,
+  getACourse,
   getUserTest,
   getUserGrades,
   getAllImages,

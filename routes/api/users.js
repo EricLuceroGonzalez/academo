@@ -7,6 +7,7 @@ const validateRegisterInput = require("../../validation/register");
 const validateLoginInput = require("../../validation/login"); // Load User model
 const User = require("../../models/User");
 const Courses = require("../../models/Courses");
+const HttpError = require("../../models/http-error");
 // Import nodemailer
 var nodemailer = require("nodemailer");
 
@@ -30,7 +31,9 @@ router.post("/register", (req, res) => {
 
   User.findOne({ email: req.body.email }).then((user) => {
     if (user) {
-      return res.status(400).json({ email: "Email already exists. Please login." });
+      return res
+        .status(400)
+        .json({ email: "Email already exists. Please login." });
     } else {
       const newUser = new User({
         name: {
@@ -133,7 +136,7 @@ router.post("/register", (req, res) => {
 // @route POST api/users/login
 // @desc Login user and return JWT token
 // @access Public
-router.post("/login", (req, res) => {
+router.post("/login", async (req, res, next) => {
   // Form validation
   const { errors, isValid } = validateLoginInput(req.body); // Check validation
   if (!isValid) {
@@ -141,41 +144,103 @@ router.post("/login", (req, res) => {
   }
   const email = req.body.email;
   const password = req.body.password; // Find user by email
-  User.findOne({ email }).then((user) => {
-    // Check if user exists
-    if (!user) {
-      return res.status(404).json({ emailnotfound: "Email not found. Please Register first!" });
-    } // Check password
-    bcrypt.compare(password, user.password).then((isMatch) => {
-      if (isMatch) {
-        // User matched
 
-        // Create JWT Payload
-        const payload = {
-          id: user.id,
-          name: user.name,
-        };
-        // Sign token
-        jwt.sign(
-          payload,
-          keys.secretOrKey,
-          {
-            expiresIn: 7200, // 2h in seconds
-          },
-          (err, token) => {
-            res.json({
-              success: true,
-              token: "Bearer " + token,
-            });
-          }
-        );
-      } else {
-        return res
-          .status(400)
-          .json({ passwordincorrect: "Password incorrect" });
-      }
-    });
+  let existingUser;
+  try {
+    existingUser = await User.findOne({ email: email });
+  } catch (err) {
+    const error = new HttpError(
+      "No pudimos encontrar este usuario, por favor regístrate",
+      403
+    );
+    return next(error);
+  }
+
+  //   CHECK IF EMAIL IS CORRECT (dummy version)
+  if (!existingUser) {
+    const error = new HttpError(
+      "No pudimos encontrar este usuario, por favor regístrate",
+      403
+    );
+    return next(error);
+  }
+
+  // Check the password, compare to the encrypted and give a token
+  let isValidPassword = false;
+  try {
+    isValidPassword = await bcrypt.compare(password, existingUser.password);
+  } catch (err) {
+    const error = new HttpError(
+      "No pudimos verificar tus datos, por favor inténtalo de nuevo.",
+      500
+    );
+    return next(error);
+  }
+
+  if (!isValidPassword) {
+    const error = new HttpError(
+      "La contraseña no es válida, por favor inténtalo de nuevo.",
+      403
+    );
+    return next(error);
+  }
+
+  // generate TOKEN
+  let token;
+  try {
+    const payload = {
+      id: existingUser.id,
+      name: existingUser.name,
+    };
+    token = jwt.sign(payload, keys.secretOrKey, { expiresIn: "1h" });
+  } catch (err) {
+    const error = new HttpError(
+      "Hubo un error en el registro, por favor inténtalo de nuevo.",
+      500
+    );
+    return next(error);
+  }
+  
+  res.json({
+    success: true,
+    token: "Bearer " + token,
   });
+
+  // User.findOne({ email }).then((user) => {
+  //   // Check if user exists
+  //   if (!user) {
+  //     return res.status(404).json({ emailnotfound: "Email not found. Please Register first!" });
+  //   } // Check password
+  //   bcrypt.compare(password, user.password).then((isMatch) => {
+  //     if (isMatch) {
+  //       // User matched
+
+  //       // Create JWT Payload
+  //       const payload = {
+  //         id: user.id,
+  //         name: user.name,
+  //       };
+  //       // Sign token
+  //       jwt.sign(
+  //         payload,
+  //         keys.secretOrKey,
+  //         {
+  //           expiresIn: 7200, // 2h in seconds
+  //         },
+  //         (err, token) => {
+  //           res.json({
+  //             success: true,
+  //             token: "Bearer " + token,
+  //           });
+  //         }
+  //       );
+  //     } else {
+  //       return res
+  //         .status(400)
+  //         .json({ passwordincorrect: "Password incorrect" });
+  //     }
+  //   });
+  // });
 });
 
 module.exports = router;

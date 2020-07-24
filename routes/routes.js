@@ -15,9 +15,10 @@ const imageFilter = function (req, file, cb) {
 };
 const upload = multer({ storage: storage, fileFilter: imageFilter });
 const ctrl = require("./routes-control");
+const gradesCtrl = require("./grades-controller");
 const router = express.Router();
 
-router.get("/getAllGrades", ctrl.getGrades);
+// router.get("/getAllGrades", ctrl.getGrades);
 router.get("/getUserGrades/:id", ctrl.getUserGrades);
 router.get("/courseDashboard/:usr", ctrl.getCourseDashboard);
 router.get("/getAllCourses", ctrl.getCourses);
@@ -29,4 +30,6 @@ router.post("/newTest", ctrl.postNewTest);
 router.post("/newCourse", ctrl.postCourse);
 router.put("/update/:id", ctrl.updateTest);
 router.post("/sendImage", upload.single("image"), ctrl.postImage);
+router.get("/getAllGrades", gradesCtrl.getAllUsers);
+router.get("/getACourse/:id", ctrl.getACourse);
 module.exports = router;
