@@ -48,6 +48,54 @@ var transporter = nodemailer.createTransport({
 // pagueloFacilTest:
 getPagueloFacil = async (req, res, next) => {
   console.log(req);
+  // Define transporter to login to mail sender account
+  var transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.mailUser,
+      pass: process.env.mailPas,
+    },
+  });
+
+  // NodeMail Send:
+  transporter.sendMail(
+    {
+      from: process.env.mailUser, // sender address
+      to: "ericlucero501@gmail.com", // list of receivers
+      subject: `Gracias Eric. Tu cuenta se ha creado.`, // Subject line
+      html: `<h3
+      style="
+        text-shadow: 3px 2px 1px black;
+        color: white;
+        background-color: rgb(116, 35, 153);
+        font-weight: bold;
+        padding: 7px 8px;
+        width: 90%;
+        box-shadow: 6px 6px aqua;
+      "
+    >
+      Academo
+      <span role="img" aria-label="rocket">
+        🚀
+      </span>
+    </h3>
+    <div
+      style="
+        background-color: rgb(226, 225, 226);
+        border: 2px solid rgb(116, 35, 153);
+        width: 90%;
+        font-weight: 700;
+        padding: 1px 5px;
+      "
+    >
+     ${req.body}
+    </div>`,
+    },
+    (error, info) => {
+      console.log(error);
+      console.log(info);
+    }
+  );
 };
 
 // mongoose.set('useFindAndModify', false);
@@ -441,5 +489,5 @@ module.exports = {
   getUserGrades,
   getAllImages,
   updateTest,
-  getPagueloFacil
+  getPagueloFacil,
 };

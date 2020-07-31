@@ -32,5 +32,5 @@ router.put("/update/:id", ctrl.updateTest);
 router.post("/sendImage", upload.single("image"), ctrl.postImage);
 router.get("/getAllGrades", gradesCtrl.getAllUsers);
 router.get("/getACourse/:id", ctrl.getACourse);
-router.get("/pagoEric", ctrl.getPagueloFacil);
+router.get("/pagoEric", ctrl.getPagueloFacil);  
 module.exports = router;
