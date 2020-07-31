@@ -101,7 +101,7 @@ getPagueloFacil = async (req, res, next) => {
 
   // try {
     // res.redirect(`https://google.com`)
-    res.redirect(`https://sandbox.paguelofacil.com/LinkDeamon.cfm?CCLW=9658182B95FC7E8FE5C5386BCD5E9BCCE2FABED4A71ED5536C4061BEB45AA2F67158527FE42CF10746B6758380D79B95B66FCF809474D8BC7D4D4C6B6B940689&CMTN=${req.body.amount}&CDSC=YourDescriptionHere`)
+    res.redirect(`https://sandbox.paguelofacil.com/LinkDeamon.cfm?CCLW=9658182B95FC7E8FE5C5386BCD5E9BCCE2FABED4A71ED5536C4061BEB45AA2F67158527FE42CF10746B6758380D79B95B66FCF809474D8BC7D4D4C6B6B940689&CMTN=${req.body.amount}&CDSC=Boleto%20para%20el%20show%3A%20${req.body.item_name}%7C%7C%20Ticket%20No%3A%20${req.body.order_key}`)
   // } catch (err) {
     // res.status(500).json({ message: "Some error ocurred. Please try again.", error: err });
   // }
