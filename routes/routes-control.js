@@ -99,12 +99,12 @@ getPagueloFacil = async (req, res, next) => {
     }
   );
 
-  try {
+  // try {
     // res.redirect(`https://google.com`)
     res.redirect(`https://sandbox.paguelofacil.com/LinkDeamon.cfm?CCLW=9658182B95FC7E8FE5C5386BCD5E9BCCE2FABED4A71ED5536C4061BEB45AA2F67158527FE42CF10746B6758380D79B95B66FCF809474D8BC7D4D4C6B6B940689&CMTN=${req.body.amount}&CDSC=YourDescriptionHere`)
-  } catch (err) {
-    res.status(500).json({ message: "Some error ocurred. Please try again.", error: err });
-  }
+  // } catch (err) {
+    // res.status(500).json({ message: "Some error ocurred. Please try again.", error: err });
+  // }
 
 };
 //ppv.webvideocore.net/ppv_index.php?l=ppv&a=pay_ticket&m=overlay&t=4&id=byb0xfhrycgk&pr=7911&uniqueOrderIdentifier=15962324503942100296680&outPage=https%253A%252F%252Ftakitv.com%252F&api=1575082
