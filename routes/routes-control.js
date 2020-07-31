@@ -87,7 +87,11 @@ getPagueloFacil = async (req, res, next) => {
         padding: 1px 5px;
       "
     >
-     ${req.body.amount}
+    currency
+     <div>${req.body.amount} </div>
+     <div>${req.body.order_key} </div>
+      <div>${req.body.item_name} </div>
+        <div>${req.body.return} </div>
      ${req.res}
     </div>`,
     },
