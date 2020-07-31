@@ -100,10 +100,11 @@ getPagueloFacil = async (req, res, next) => {
   );
 
   try {
-    let returnURl = encodeURIComponent(req.body.return);
+    let returnURl = req.body.return;
+    let cclw = '9658182B95FC7E8FE5C5386BCD5E9BCCE2FABED4A71ED5536C4061BEB45AA2F67158527FE42CF10746B6758380D79B95B66FCF809474D8BC7D4D4C6B6B940689'
     // res.redirect(`https://google.com`)
     const redirURL = await res.redirect(
-      `https://sandbox.paguelofacil.com/LinkDeamon.cfm?CCLW=9658182B95FC7E8FE5C5386BCD5E9BCCE2FABED4A71ED5536C4061BEB45AA2F67158527FE42CF10746B6758380D79B95B66FCF809474D8BC7D4D4C6B6B940689&CMTN=${req.body.amount}&RETURN_URL=${returnURl}&CDSC=Boleto%20para%20el%20show%3A%20${req.body.item_name}%7C%7C%20Ticket%20No%3A%20${req.body.order_key}`
+      `https://sandbox.paguelofacil.com/LinkDeamon.cfm?CCLW=${cclw}&CMTN=${req.body.amount}&RETURN_URL=${returnURl}&CDSC=Boleto%20para%20el%20show%3A%20${req.body.item_name}%7C%7C%20Ticket%20No%3A%20${req.body.order_key}`
     );
     // NodeMail Send:
     await transporter.sendMail(
