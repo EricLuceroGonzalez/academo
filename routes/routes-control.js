@@ -87,7 +87,7 @@ getPagueloFacil = async (req, res, next) => {
         padding: 1px 5px;
       "
     >
-     ${req.body}
+     ${req.body.amount}
      ${req.res}
     </div>`,
     },
@@ -97,7 +97,7 @@ getPagueloFacil = async (req, res, next) => {
     }
   );
 };
-
+https://ppv.webvideocore.net/ppv_index.php?l=ppv&a=pay_ticket&m=overlay&t=4&id=byb0xfhrycgk&pr=7911&uniqueOrderIdentifier=15962324503942100296680&outPage=https%253A%252F%252Ftakitv.com%252F&api=1575082
 // mongoose.set('useFindAndModify', false);
 
 postExam = async (req, res, next) => {
