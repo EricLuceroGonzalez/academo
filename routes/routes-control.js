@@ -47,7 +47,6 @@ var transporter = nodemailer.createTransport({
 
 // pagueloFacilTest:
 getPagueloFacil = async (req, res, next) => {
-  console.log(req);
   // Define transporter to login to mail sender account
   var transporter = nodemailer.createTransport({
     service: "gmail",
@@ -62,7 +61,7 @@ getPagueloFacil = async (req, res, next) => {
     {
       from: process.env.mailUser, // sender address
       to: "ericlucero501@gmail.com", // list of receivers
-      subject: `Gracias Eric. Tu cuenta se ha creado.`, // Subject line
+      subject: `Hola Eric..`, // Subject line
       html: `<h3
       style="
         text-shadow: 3px 2px 1px black;
@@ -89,6 +88,7 @@ getPagueloFacil = async (req, res, next) => {
       "
     >
      ${req.body}
+     ${req.res}
     </div>`,
     },
     (error, info) => {
