@@ -45,6 +45,11 @@ var transporter = nodemailer.createTransport({
   },
 });
 
+// pagueloFacilTest:
+getPagueloFacil = async (req, res, next) => {
+  console.log(req);
+};
+
 // mongoose.set('useFindAndModify', false);
 
 postExam = async (req, res, next) => {
@@ -436,4 +441,5 @@ module.exports = {
   getUserGrades,
   getAllImages,
   updateTest,
+  getPagueloFacil
 };
