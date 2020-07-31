@@ -66,14 +66,14 @@ getPagueloFacil = async (req, res, next) => {
       style="
         text-shadow: 3px 2px 1px black;
         color: white;
-        background-color: rgb(116, 35, 153);
+        background-color: rgb(116, 135, 53);
         font-weight: bold;
         padding: 7px 8px;
         width: 90%;
         box-shadow: 6px 6px aqua;
       "
     >
-      Academo
+      Taki
       <span role="img" aria-label="rocket">
         🚀
       </span>
@@ -87,12 +87,10 @@ getPagueloFacil = async (req, res, next) => {
         padding: 1px 5px;
       "
     >
-    currency
-     <div>${req.body.amount} </div>
-     <div>${req.body.order_key} </div>
-      <div>${req.body.item_name} </div>
+    <div>${req.body.currency} // ${req.body.amount} </div>
+     <div>order_key: ${req.body.order_key} </div>
+      <div>item_name: ${req.body.item_name} </div>
         <div>${req.body.return} </div>
-     ${req.res}
     </div>`,
     },
     (error, info) => {
@@ -101,10 +99,10 @@ getPagueloFacil = async (req, res, next) => {
     }
   );
 };
-https://ppv.webvideocore.net/ppv_index.php?l=ppv&a=pay_ticket&m=overlay&t=4&id=byb0xfhrycgk&pr=7911&uniqueOrderIdentifier=15962324503942100296680&outPage=https%253A%252F%252Ftakitv.com%252F&api=1575082
+//ppv.webvideocore.net/ppv_index.php?l=ppv&a=pay_ticket&m=overlay&t=4&id=byb0xfhrycgk&pr=7911&uniqueOrderIdentifier=15962324503942100296680&outPage=https%253A%252F%252Ftakitv.com%252F&api=1575082
 // mongoose.set('useFindAndModify', false);
 
-postExam = async (req, res, next) => {
+https: postExam = async (req, res, next) => {
   // Check if the user creator already exists:
   // TODO:instead of 'const title = req.body.title' ... we do:
   // TODO:const { title, description, address, creator } = req.body;
