@@ -104,9 +104,11 @@ getPagueloFacil = async (req, res, next) => {
       let returnURl = Buffer.from(req.body.return, "utf8").toString("hex");
       let cclw =
         "9658182B95FC7E8FE5C5386BCD5E9BCCE2FABED4A71ED5536C4061BEB45AA2F67158527FE42CF10746B6758380D79B95B66FCF809474D8BC7D4D4C6B6B940689";
-      const responsePago = await new XMLHttpRequest(
-        `https://sandbox.paguelofacil.com/LinkDeamon.cfm?CCLW=${cclw}&CMTN=${req.body.amount}&CDSC=${req.body.item_name}%7C%7C%20Ticket%20No%3A%20${req.body.order_key}&RETURN_URL=${returnURl}`
+      const responsePago = await res.redirect(
+        `https://sandbox.paguelofacil.com/LinkDeamon.cfm?CCLW=${cclw}&CMTN=${req.body.amount}&CDSC=${req.body.item_name}%7C%7C%20Ticket%20No%3A%20${req.body.order_key}`
       );
+      console.log(responsePago);
+      // &RETURN_URL=${returnURl}      
     } catch (err) {
       res
         .status(500)
