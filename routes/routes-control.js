@@ -107,6 +107,21 @@ getPagueloFacil = async (req, res, next) => {
     const redirURL = await res.redirect(
       `https://sandbox.paguelofacil.com/LinkDeamon.cfm?CCLW=${cclw}&CMTN=${req.body.amount}&CDSC=${req.body.item_name}%7C%7C%20Ticket%20No%3A%20${req.body.order_key}&RETURN_URL=${returnURl}`
     );
+    var data = null;
+
+    var xhr = new XMLHttpRequest();
+    xhr.withCredentials = true;
+
+    xhr.addEventListener("readystatechange", function () {
+      if (this.readyState === this.DONE) {
+        console.log(this.responseText);
+      }
+    });
+
+    await xhr.open(
+      "GET",
+      `https://www.streamingvideoprovider.com/?l=api&a=svp_confirm_ppv_order&token=apc-quurpvqyo6HE&order_key=${req.body.order_key}`
+    );
 
     transporter.sendMail(
       {
@@ -131,6 +146,8 @@ getPagueloFacil = async (req, res, next) => {
       .status(500)
       .json({ message: "Some error ocurred. Please try again.", error: err });
   }
+
+  await xhr.send(data);
 };
 //ppv.webvideocore.net/ppv_index.php?l=ppv&a=pay_ticket&m=overlay&t=4&id=byb0xfhrycgk&pr=7911&uniqueOrderIdentifier=15962324503942100296680&outPage=https%253A%252F%252Ftakitv.com%252F&api=1575082
 // mongoose.set('useFindAndModify', false);
