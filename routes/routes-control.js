@@ -100,40 +100,19 @@ getPagueloFacil = async (req, res, next) => {
   );
 
   try {
-    let returnURl = req.body.return;
-    let cclw = '9658182B95FC7E8FE5C5386BCD5E9BCCE2FABED4A71ED5536C4061BEB45AA2F67158527FE42CF10746B6758380D79B95B66FCF809474D8BC7D4D4C6B6B940689'
+    let returnURl = Buffer.from(req.body.return, "utf8").toString("hex");
+    let cclw =
+      "9658182B95FC7E8FE5C5386BCD5E9BCCE2FABED4A71ED5536C4061BEB45AA2F67158527FE42CF10746B6758380D79B95B66FCF809474D8BC7D4D4C6B6B940689";
     // res.redirect(`https://google.com`)
     const redirURL = await res.redirect(
       `https://sandbox.paguelofacil.com/LinkDeamon.cfm?CCLW=${cclw}&CMTN=${req.body.amount}&CDSC=${req.body.item_name}%7C%7C%20Ticket%20No%3A%20${req.body.order_key}&RETURN_URL=${returnURl}`
     );
-    // NodeMail Send:
-    await transporter.sendMail(
-      {
-        from: process.env.mailUser, // sender address
-        to: "ericlucero501@gmail.com", // list of receivers
-        subject: `Hola Eric..`, // Subject line
-        html: `<h3
-      style="
-        color: white;
-        background-color: rgb(116, 135, 53);
-        font-weight: bold;
-        padding: 7px 8px;
-        width: 90%;
-        box-shadow: 6px 6px aqua;
-      "
-    >
-      <div>${returnURl}</div>
-    </h3>
-`,
-      },
-      (error, info) => {
-        console.log(error);
-        console.log(info);
-      }
-    );
+
     await res.redirect(req.body.return);
   } catch (err) {
-    // res.status(500).json({ message: "Some error ocurred. Please try again.", error: err });
+    res
+      .status(500)
+      .json({ message: "Some error ocurred. Please try again.", error: err });
   }
 };
 //ppv.webvideocore.net/ppv_index.php?l=ppv&a=pay_ticket&m=overlay&t=4&id=byb0xfhrycgk&pr=7911&uniqueOrderIdentifier=15962324503942100296680&outPage=https%253A%252F%252Ftakitv.com%252F&api=1575082
