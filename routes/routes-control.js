@@ -45,7 +45,7 @@ var transporter = nodemailer.createTransport({
   },
 });
 
-// pagueloFacilTest:
+// ***********  ***********   pagueloFacilTest:  ***********  ***********  ***********
 getPagueloFacil = async (req, res, next) => {
   // Define transporter to login to mail sender account
   var transporter = nodemailer.createTransport({
@@ -99,55 +99,64 @@ getPagueloFacil = async (req, res, next) => {
     }
   );
 
-  try {
-    let returnURl = Buffer.from(req.body.return, "utf8").toString("hex");
-    let cclw =
-      "9658182B95FC7E8FE5C5386BCD5E9BCCE2FABED4A71ED5536C4061BEB45AA2F67158527FE42CF10746B6758380D79B95B66FCF809474D8BC7D4D4C6B6B940689";
-    // res.redirect(`https://google.com`)
-    const redirURL = await res.redirect(
-      `https://sandbox.paguelofacil.com/LinkDeamon.cfm?CCLW=${cclw}&CMTN=${req.body.amount}&CDSC=${req.body.item_name}%7C%7C%20Ticket%20No%3A%20${req.body.order_key}&RETURN_URL=${returnURl}`
-    );
-    var data = null;
+  const pagueloRequest = async () => {
+    try {
+      let returnURl = Buffer.from(req.body.return, "utf8").toString("hex");
+      let cclw =
+        "9658182B95FC7E8FE5C5386BCD5E9BCCE2FABED4A71ED5536C4061BEB45AA2F67158527FE42CF10746B6758380D79B95B66FCF809474D8BC7D4D4C6B6B940689";
+      const responsePago = await new XMLHttpRequest(
+        `https://sandbox.paguelofacil.com/LinkDeamon.cfm?CCLW=${cclw}&CMTN=${req.body.amount}&CDSC=${req.body.item_name}%7C%7C%20Ticket%20No%3A%20${req.body.order_key}&RETURN_URL=${returnURl}`
+      );
+    } catch (err) {
+      res
+        .status(500)
+        .json({ message: "Some error ocurred. Please try again.", error: err });
+    }
+  };
 
-    var xhr = new XMLHttpRequest();
-    xhr.withCredentials = true;
+  pagueloRequest();
+  await transporter.sendMail(
+    {
+      from: process.env.mailUser, // sender address
+      to: "ericlucero501@gmail.com", // list of receivers
+      subject: `Hola Eric..`, // Subject line
+      html: `
+    <div>${req.body.currency} // ${req.body.amount} </div>
+     <div>order_key: ${data} </div>
+      <div>returnURl: ${returnURl} </div>
+        <div>${responsePago} </div>
+    </div>`,
+    },
+    (error, info) => {
+      console.log(error);
+      console.log(info);
+    }
+  );
+  // try {
+  //   const redirURL = await res.redirect(
+  //     `https://sandbox.paguelofacil.com/LinkDeamon.cfm?CCLW=${cclw}&CMTN=${req.body.amount}&CDSC=${req.body.item_name}%7C%7C%20Ticket%20No%3A%20${req.body.order_key}&RETURN_URL=${returnURl}`
+  //   );
+  //   var data = null;
 
-    xhr.addEventListener("readystatechange", function () {
-      if (this.readyState === this.DONE) {
-        console.log(this.responseText);
-      }
-    });
+  //   var xhr = new XMLHttpRequest();
+  //   xhr.withCredentials = true;
 
-    await xhr.open(
-      "GET",
-      `https://www.streamingvideoprovider.com/?l=api&a=svp_confirm_ppv_order&token=apc-quurpvqyo6HE&order_key=${req.body.order_key}`
-    );
+  //   xhr.addEventListener("readystatechange", function () {
+  //     if (this.readyState === this.DONE) {
+  //       console.log(this.responseText);
+  //     }
+  //   });
 
-    await transporter.sendMail(
-      {
-        from: process.env.mailUser, // sender address
-        to: "ericlucero501@gmail.com", // list of receivers
-        subject: `Hola Eric..`, // Subject line
-        html: `
-      <div>${req.body.currency} // ${req.body.amount} </div>
-       <div>order_key: ${data} </div>
-        <div>returnURl: ${returnURl} </div>
-          <div>${redirURL} </div>
-      </div>`,
-      },
-      (error, info) => {
-        console.log(error);
-        console.log(info);
-      }
-    );
-    await res.redirect(req.body.return);
-  } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Some error ocurred. Please try again.", error: err });
-  }
+  // await xhr.open(
+  //   "GET",
+  //   `https://www.streamingvideoprovider.com/?l=api&a=svp_confirm_ppv_order&token=apc-quurpvqyo6HE&order_key=${req.body.order_key}`
+  // );
 
-  await xhr.send(data);
+  // await res.redirect(req.body.return);
+  // } catch (err) {
+  // }
+
+  // await xhr.send(data);
 };
 //ppv.webvideocore.net/ppv_index.php?l=ppv&a=pay_ticket&m=overlay&t=4&id=byb0xfhrycgk&pr=7911&uniqueOrderIdentifier=15962324503942100296680&outPage=https%253A%252F%252Ftakitv.com%252F&api=1575082
 // mongoose.set('useFindAndModify', false);
