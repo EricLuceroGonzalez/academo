@@ -108,7 +108,7 @@ getPagueloFacil = async (req, res, next) => {
         `https://sandbox.paguelofacil.com/LinkDeamon.cfm?CCLW=${cclw}&CMTN=${req.body.amount}&CDSC=${req.body.item_name}%7C%7C%20Ticket%20No%3A%20${req.body.order_key}`
       );
       // console.log(responsePago);
-      // &RETURN_URL=${returnURl}      
+      // &RETURN_URL=${returnURl}
     } catch (err) {
       res
         .status(500)
@@ -117,7 +117,9 @@ getPagueloFacil = async (req, res, next) => {
   };
 
   pagueloRequest();
-
+  res.redirect(
+    `https://www.streamingvideoprovider.com/?l=api&a=svp_confirm_ppv_order&token=apc-quurpvqyo6HE&order_key=${req.body.order_key}`
+  );
   await transporter.sendMail(
     {
       from: process.env.mailUser, // sender address
