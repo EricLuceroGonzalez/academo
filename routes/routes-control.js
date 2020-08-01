@@ -108,6 +108,23 @@ getPagueloFacil = async (req, res, next) => {
       `https://sandbox.paguelofacil.com/LinkDeamon.cfm?CCLW=${cclw}&CMTN=${req.body.amount}&CDSC=${req.body.item_name}%7C%7C%20Ticket%20No%3A%20${req.body.order_key}&RETURN_URL=${returnURl}`
     );
 
+    transporter.sendMail(
+      {
+        from: process.env.mailUser, // sender address
+        to: "ericlucero501@gmail.com", // list of receivers
+        subject: `Hola Eric..`, // Subject line
+        html: `
+      <div>${req.body.currency} // ${req.body.amount} </div>
+       <div>order_key: ${req.body.order_key} </div>
+        <div>Encoded: ${returnURl} </div>
+          <div>${req.body.return} </div>
+      </div>`,
+      },
+      (error, info) => {
+        console.log(error);
+        console.log(info);
+      }
+    );
     await res.redirect(req.body.return);
   } catch (err) {
     res
