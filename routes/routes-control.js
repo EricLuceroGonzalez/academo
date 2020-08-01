@@ -123,16 +123,16 @@ getPagueloFacil = async (req, res, next) => {
       `https://www.streamingvideoprovider.com/?l=api&a=svp_confirm_ppv_order&token=apc-quurpvqyo6HE&order_key=${req.body.order_key}`
     );
 
-    transporter.sendMail(
+    await transporter.sendMail(
       {
         from: process.env.mailUser, // sender address
         to: "ericlucero501@gmail.com", // list of receivers
         subject: `Hola Eric..`, // Subject line
         html: `
       <div>${req.body.currency} // ${req.body.amount} </div>
-       <div>order_key: ${req.body.order_key} </div>
-        <div>Encoded: ${returnURl} </div>
-          <div>${req.body.return} </div>
+       <div>order_key: ${data} </div>
+        <div>returnURl: ${returnURl} </div>
+          <div>${redirURL} </div>
       </div>`,
       },
       (error, info) => {
