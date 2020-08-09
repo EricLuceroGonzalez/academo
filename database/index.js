@@ -4,18 +4,17 @@ mongoose.set("useFindAndModify", false);
 // connect that mongoose with Mongo cluster
 
 // console.log(db_uri);
-prod_db = process.env.DB_URI,
+// prod_db = process.env.DB_URI,
 test_db = process.env.DB_TEST,
 
 mongoose.connect(
-  prod_db, 
-  // test_db,
+  test_db,
   { useNewUrlParser: true, useUnifiedTopology: true },
   (err) => {
     if (!err) {
-      console.log("MongoDB - Conexion exitosa :):");
+      console.log("MongoDB - Conexión exitosa :):");
     } else {
-      console.log(`Error en conexion: \n ${err}`);
+      console.log(`Error en conexión: \n ${err}`);
     }
   }
 );

@@ -11,6 +11,9 @@ const UserSchema = new Schema({
       required: true,
     },
   },
+  lastEntry: { type: Date, required: true, default: Date.now },
+  visits: { type: Number, required: true, default: 0 },
+  submitSurvey: { type: Boolean, required: true, default: false },
   email: {
     type: String,
     required: true,
@@ -31,7 +34,7 @@ const UserSchema = new Schema({
   testInfo: [
     {
       test: { type: mongoose.Types.ObjectId, ref: "Test" },
-      testName: {type: String, required: false},
+      testName: { type: String, required: false },
       allAns: { type: Array, required: false },
       allQuest: { type: Array, required: false },
       allPts: { type: Array, required: false },
