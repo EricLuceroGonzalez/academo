@@ -15,12 +15,12 @@ const Course = require("../models/Courses");
 // @access Public
 const signup = async (req, res, next) => {
   // Form validation
-//  console.log("\nbackend register");
-//  console.log(req.body);
+  //  console.log("\nbackend register");
+  //  console.log(req.body);
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-  //  console.log(errors);
+    //  console.log(errors);
 
     const error = new HttpError(
       "Los valores introducidos no son validos. Intenta de nuevo",
@@ -97,19 +97,27 @@ const signup = async (req, res, next) => {
     subject: userSubject._id,
   });
 
-  //   Create USER ---> save() to Mongo, as async => await 
+  //   Create USER ---> save() to Mongo, as async => await
   try {
-    const session = await mongoose.startSession();
-    session.startTransaction();
-    await userSubject.enroll.push(createdUser._id);
-    await createdUser.save({ session: session });
-    session.commitTransaction();
+    await createdUser.save();
   } catch (err) {
-    const error = new HttpError("No pudimos crear el usuario, por favor inténtalo de nuevo", 500);
+    const error = new HttpError(
+      "No pudimos crear el usuario, por favor inténtalo de nuevo",
+      500
+    );
     return next(error);
   }
 
-  
+  try {
+    await userSubject.enroll.push(createdUser._id);
+  } catch (err) {
+    const error = new HttpError(
+      "No pudimos crear el usuario, por favor inténtalo de nuevo",
+      500
+    );
+    return next(error);
+  }
+
   let token;
   try {
     token = jwt.sign(
@@ -118,7 +126,10 @@ const signup = async (req, res, next) => {
       { expiresIn: "3s" }
     );
   } catch (err) {
-    const error = new HttpError("El usuario ha sido creado, sin embargo hay un problema con tu navegador.", 500);
+    const error = new HttpError(
+      "El usuario ha sido creado, sin embargo hay un problema con tu navegador.",
+      500
+    );
     return next(error);
   }
 
@@ -259,7 +270,6 @@ const signup = async (req, res, next) => {
 // @desc Login user and return JWT token
 // @access Public
 const login = async (req, res, next) => {
-
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const error = new HttpError(
@@ -343,7 +353,7 @@ const login = async (req, res, next) => {
 };
 
 const getAllUsers = async (req, res, next) => {
-//  console.log("in here getAllUsers");
+  //  console.log("in here getAllUsers");
 
   let allUsers;
   try {
@@ -396,9 +406,9 @@ const getUserInfo = async (req, res, next) => {
 };
 
 const postSurvey = async (req, res, next) => {
-//  console.log("\n ---------------------------------");
+  //  console.log("\n ---------------------------------");
 
-//  console.log("postSurvey");
+  //  console.log("postSurvey");
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const error = new HttpError(
