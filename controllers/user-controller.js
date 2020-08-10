@@ -105,7 +105,7 @@ const signup = async (req, res, next) => {
     await createdUser.save({ session: session });
     await session.commitTransaction();
   } catch (err) {
-    const error = new HttpError("Creating user failed, please try again", 500);
+    const error = new HttpError("No pudimos crear el usuario, por favor intentalo de nuevo", 500);
     return next(error);
   }
   let token;
@@ -116,7 +116,7 @@ const signup = async (req, res, next) => {
       { expiresIn: "3s" }
     );
   } catch (err) {
-    const error = new HttpError("Signing up failed, please try again", 500);
+    const error = new HttpError("El usuario ha sido creado, sin embargo hay un problema con tu navegador.", 500);
     return next(error);
   }
 
