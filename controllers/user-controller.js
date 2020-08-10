@@ -110,6 +110,7 @@ const signup = async (req, res, next) => {
 
   try {
     await userSubject.enroll.push(createdUser._id);
+    await userSubject.save();
   } catch (err) {
     const error = new HttpError(
       "No pudimos crear el usuario, por favor inténtalo de nuevo",
