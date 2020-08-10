@@ -100,7 +100,7 @@ const signup = async (req, res, next) => {
   //   Create USER ---> save() to Mongo, as async => await 
   try {
     const session = await mongoose.startSession();
-    session.startTransaction();
+    await session.startTransaction();
     await userSubject.enroll.push(createdUser._id);
     await createdUser.save({ session: session });
     await session.commitTransaction();
