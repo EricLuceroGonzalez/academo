@@ -97,7 +97,7 @@ const signup = async (req, res, next) => {
     subject: userSubject._id,
   });
 
-  //   Create USER ---> save() to Mongo, as async => await
+  //   Create USER ---> save() to Mongo, as async => await 
   try {
     const session = await mongoose.startSession();
     session.startTransaction();
@@ -108,6 +108,8 @@ const signup = async (req, res, next) => {
     const error = new HttpError("No pudimos crear el usuario, por favor inténtalo de nuevo", 500);
     return next(error);
   }
+
+  
   let token;
   try {
     token = jwt.sign(
@@ -257,7 +259,6 @@ const signup = async (req, res, next) => {
 // @desc Login user and return JWT token
 // @access Public
 const login = async (req, res, next) => {
-//  console.log(`login!`);
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
