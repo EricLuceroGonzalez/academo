@@ -13,7 +13,7 @@ router.post(
   [
     check("firstName").not().isEmpty(),
     check("lastName").not().isEmpty(),
-    check("email").normalizeEmail().isEmail(), // Test@test.com --> test@test.com
+    check("email").normalizeEmail({ gmail_remove_dots: false }).isEmail(), // Test@test.com --> test@test.com
     check("password").isLength({ min: 6 }),
   ],
   userController.signup
@@ -21,10 +21,16 @@ router.post(
 router.post(
   "/login",
   [
-    check("email").normalizeEmail().isEmail(), // Test@test.com --> test@test.com
+    check("email").normalizeEmail({ gmail_remove_dots: false }).isEmail(), // Test@test.com --> test@test.com
     check("password").isLength({ min: 6 }),
   ],
   userController.login
+);
+
+router.post(
+  "/postSurvey",
+  [check("filledBy").not().isEmpty()],
+  userController.postSurvey
 );
 
 module.exports = router;

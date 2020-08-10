@@ -5,10 +5,9 @@ const { validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
-const keys = require("../config/keys");
 const HttpError = require("../models/http-error");
 const User = require("../models/User");
-const Test = require("../models/Test");
+const Survey = require("../models/Survey-model");
 const Course = require("../models/Courses");
 
 // @route POST api/users/register
@@ -16,12 +15,12 @@ const Course = require("../models/Courses");
 // @access Public
 const signup = async (req, res, next) => {
   // Form validation
-  console.log("\nbackend register");
-  console.log(req.body);
+//  console.log("\nbackend register");
+//  console.log(req.body);
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    console.log(errors);
+  //  console.log(errors);
 
     const error = new HttpError(
       "Los valores introducidos no son validos. Intenta de nuevo",
@@ -135,34 +134,37 @@ const signup = async (req, res, next) => {
       from: process.env.mailUser, // sender address
       to: email, // list of receivers
       subject: `Academo.xyz | Gracias ${firstName}. Tu cuenta se ha creado.`, // Subject line
-      html: `<h3
+      html: `<div style="min-width: 65%">
+      <h3
       style="
         color: white;
         background-color: rgb(156, 0, 228);
         font-weight: bold;
         padding: 5rem 2rem;
-        font-size: 3rem;
-        width: 100%;
+        font-size: 2rem;
+        width: 90%;
       "
     >
-    <span role="img" aria-label="rocket">
-    🚀
-  </span>
       Academo.xyz
+      <span role="img" aria-label="rocket">
+        🚀
+      </span>
     </h3>
     <div
       style="
         font-family: Haettenschweiler, 'Arial Narrow Bold', sans-serif;
         background-color: rgb(241, 241, 241);
-        border: 7px solid rgb(156, 0, 228);
-        width: 100%;
-        font-size: 1.45rem;
-        padding: 4rem 1.25rem;
+        border: 12px solid rgb(156, 0, 228);
+        width: 90%;
+        font-size: 1.2rem;
+        padding: 4rem 2rem;
       "
     >
       <div>
         Hola,
-        <strong style="background-color: rgb(40, 210, 105);"> ${firstName},</strong>
+        <strong style="background-color: #dcffe4; padding: 3px 12px;">
+          ${firstName},</strong
+        >
       </div>
       <div>
         Tu cuenta en <a href="https://www.academo.xyz">academo.xyz</a> ha sido
@@ -172,7 +174,8 @@ const signup = async (req, res, next) => {
         </span>
       </div>
       <div>
-        Tu contraseña es:<strong style="background-color: rgb(40, 210, 105);"
+        Tu contraseña es:<strong
+          style="background-color: #dcffe4; padding: 3px 12px;"
           >${password}</strong
         >
         <span role="img" aria-label="rocket">
@@ -207,14 +210,28 @@ const signup = async (req, res, next) => {
             </span>
           </li>
           <li>
-            Ingresar a tu cuenta personal desde tu computadora o desde tu celular.
+            Ingresar a tu cuenta personal desde tu computadora o desde tu
+            celular.
             <span role="img" aria-label="rocket">
               📱
             </span>
           </li>
         </ol>
       </div>
-      <div style="margin-top: 33%;">
+      <div style="margin-top: 3rem; width: 95%;">
+        <p>
+          Al iniciar sesión, llegarás a una sección llamada
+          <span style="background-color: #dcffe4; padding: 5px 12px;"
+            >Dashboard</span
+          >. 
+          </p>
+          <p>
+          En esta sección encontrarás tu información, el acceso a talleres y
+          las notas de los mismos. No sin antes llenar una encuesta, totalmente
+          confidencial, que no guarda información del autor de la misma.
+        </p>
+      </div>
+      <div style="margin-top: 15%;">
         <p>Gracias por crear tu cuenta.</p>
       </div>
       <div style="margin-top: 12%; color: rgb(116, 35, 153);">
@@ -223,6 +240,7 @@ const signup = async (req, res, next) => {
           ericlucero501@gmail.com
         </p>
       </div>
+    </div>
     </div>`,
     },
     (error, info) => {}
@@ -239,7 +257,7 @@ const signup = async (req, res, next) => {
 // @desc Login user and return JWT token
 // @access Public
 const login = async (req, res, next) => {
-  console.log(`login!`);
+//  console.log(`login!`);
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -294,8 +312,8 @@ const login = async (req, res, next) => {
 
   // Add this visit:
   try {
-    await existingUser.update({ $inc: { visits: 1 } });
-    await existingUser.update({ $currentDate: { lastEntry: true } });
+    await existingUser.updateOne({ $inc: { visits: 1 } });
+    await existingUser.updateOne({ $currentDate: { lastEntry: true } });
   } catch (err) {
     const error = new HttpError("error on last date", 500);
     return next(error);
@@ -324,8 +342,7 @@ const login = async (req, res, next) => {
 };
 
 const getAllUsers = async (req, res, next) => {
-  console.time("start");
-  console.log("in here getAllUsers");
+//  console.log("in here getAllUsers");
 
   let allUsers;
   try {
@@ -338,7 +355,6 @@ const getAllUsers = async (req, res, next) => {
     return next(error);
   }
   res.status(200).send(allUsers);
-  console.timeEnd("start");
 };
 
 const getUserInfo = async (req, res, next) => {
@@ -378,7 +394,61 @@ const getUserInfo = async (req, res, next) => {
   });
 };
 
+const postSurvey = async (req, res, next) => {
+//  console.log("\n ---------------------------------");
+
+//  console.log("postSurvey");
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = new HttpError(
+      "Los valores introducidos no son validos. Intenta de nuevo",
+      422
+    );
+    return next(error);
+  }
+
+  // Build file:
+  const { filledBy, personal, academic, homeConnection, family } = req.body;
+
+  let existingUser;
+  try {
+    existingUser = await User.findOneAndUpdate(
+      { _id: filledBy },
+      { submitSurvey: true }
+    );
+  } catch (err) {
+    const error = new HttpError(
+      "No pudimos encontrar este usuario, por favor regístrate",
+      403
+    );
+    return next(error);
+  }
+
+  //   CHECK IF EMAIL IS CORRECT (dummy version)
+  const surveyFile = new Survey({
+    personal,
+    academic,
+    homeConnection,
+    family,
+  });
+
+  if (existingUser) {
+    try {
+      await surveyFile.save();
+    } catch (err) {
+      const error = new HttpError(
+        "Hubo un error guardando la encuesta, por favor intentalo de nuevo",
+        403
+      );
+      return next(error);
+    }
+  }
+
+  res.status(200).json({ message: "Encuesta entregada!" });
+};
+
 exports.signup = signup;
 exports.login = login;
 exports.getAllUsers = getAllUsers;
 exports.getUserInfo = getUserInfo;
+exports.postSurvey = postSurvey;
