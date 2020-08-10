@@ -48,7 +48,7 @@ const signup = async (req, res, next) => {
     existingUser = await User.findOne({ email: email });
   } catch (err) {
     const error = new HttpError(
-      "Ocurrió un error al verificar el correo, intentalo de nuevo.",
+      "Ocurrió un error al verificar el correo, inténtalo de nuevo.",
       500
     );
     return next(error);
@@ -67,7 +67,7 @@ const signup = async (req, res, next) => {
     hashedPassword = await bcrypt.hash(password, 12);
   } catch (err) {
     const error = new HttpError(
-      "Hubo un error al encriptar la contraseña, por favor intentalo de nuevo.",
+      "Hubo un error al encriptar la contraseña, por favor inténtalo de nuevo.",
       500
     );
     return next(error);
@@ -79,7 +79,7 @@ const signup = async (req, res, next) => {
     userSubject = await Course.findOne({ courseName: subject });
   } catch (err) {
     const error = new HttpError(
-      "El curso que has introducido no esta disponible, por favor intentalo de nuevo.",
+      "El curso que has introducido no esta disponible, por favor inténtalo de nuevo.",
       500
     );
     return next(error);
@@ -105,7 +105,7 @@ const signup = async (req, res, next) => {
     await createdUser.save({ session: session });
     await session.commitTransaction();
   } catch (err) {
-    const error = new HttpError("No pudimos crear el usuario, por favor intentalo de nuevo", 500);
+    const error = new HttpError("No pudimos crear el usuario, por favor inténtalo de nuevo", 500);
     return next(error);
   }
   let token;
@@ -437,7 +437,7 @@ const postSurvey = async (req, res, next) => {
       await surveyFile.save();
     } catch (err) {
       const error = new HttpError(
-        "Hubo un error guardando la encuesta, por favor intentalo de nuevo",
+        "Hubo un error guardando la encuesta, por favor inténtalo de nuevo",
         403
       );
       return next(error);
