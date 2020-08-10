@@ -101,9 +101,9 @@ const signup = async (req, res, next) => {
   try {
     const session = await mongoose.startSession();
     session.startTransaction();
-    userSubject.enroll.push(createdUser._id);
+    await userSubject.enroll.push(createdUser._id);
     await createdUser.save({ session: session });
-    await session.commitTransaction();
+    session.commitTransaction();
   } catch (err) {
     const error = new HttpError("No pudimos crear el usuario, por favor inténtalo de nuevo", 500);
     return next(error);
