@@ -459,8 +459,97 @@ const postSurvey = async (req, res, next) => {
   res.status(200).json({ message: "Encuesta entregada!" });
 };
 
+const getUserById = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = new HttpError(
+      "Los valores introducidos no son validos. Intenta de nuevo",
+      422
+    );
+    return next(error);
+  }
+  let existingUser;
+  try {
+    existingUser = await User.findById(req.params.uid);
+  } catch (err) {
+    const error = new HttpError(
+      "No pudimos encontrar este usuario, por favor regístrate",
+      403
+    );
+    return next(error);
+  }
+
+  res.status(200).json({
+    name: existingUser.name,
+    id: existingUser._id,
+    email: existingUser.email,
+    identification: existingUser.identification,
+  });
+};
+
+const updateUserData = async (req, res, next) => {
+  console.log("updateUserData");
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = new HttpError(
+      "Los valores introducidos no son validos. Intenta de nuevo",
+      422
+    );
+    return next(error);
+  }
+
+  const { firstName, lastName, email, identification } = req.body;
+
+  console.log(`req.params.uid: ${req.params.uid}`);
+  console.log(req.body);
+  
+  console.log(`req.body.identification: ${req.body.identification}`);
+  
+
+  let userToEdit;
+  try {
+    userToEdit = await User.findById(req.params.uid);
+    console.log(userToEdit);
+  } catch (err) {
+    const error = new HttpError(
+      "No pudimos encontrar este usuario, por favor regístrate",
+      403
+    );
+    return next(error);
+  }
+
+  console.log(userToEdit.identification);
+  try{
+    userToEdit.name.firstName = firstName;
+    userToEdit.name.lastName = lastName;
+    userToEdit.email = email;
+    userToEdit.identification = identification;  
+  } catch (err) {
+    const error = new HttpError(
+      "No pudimos guardar los cambios, por favor regístrate",
+      403
+    );
+    return next(error);
+  }
+
+  try {
+    console.log(userToEdit);
+    await userToEdit.save();
+  } catch (err) {
+    const error = new HttpError(
+      "No pudimos guardar los cambios, por favor regístrate",
+      403
+    );
+    return next(error);
+  }
+  res.status(200).json({ message: "Cambios guardados!" });
+};
+
 exports.signup = signup;
 exports.login = login;
 exports.getAllUsers = getAllUsers;
 exports.getUserInfo = getUserInfo;
 exports.postSurvey = postSurvey;
+exports.getUserById = getUserById;
+exports.updateUserData = updateUserData;

@@ -7,6 +7,7 @@ const router = express.Router();
 const userController = require("../controllers/user-controller");
 
 router.get("/info/:uid", userController.getUserInfo);
+router.get("/user/:uid", userController.getUserById);
 
 router.post(
   "/signup",
@@ -32,5 +33,7 @@ router.post(
   [check("filledBy").not().isEmpty()],
   userController.postSurvey
 );
+
+router.patch("/:uid", userController.updateUserData);
 
 module.exports = router;
