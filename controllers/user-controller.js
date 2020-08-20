@@ -503,9 +503,8 @@ const updateUserData = async (req, res, next) => {
 
   console.log(`req.params.uid: ${req.params.uid}`);
   console.log(req.body);
-  
+
   console.log(`req.body.identification: ${req.body.identification}`);
-  
 
   let userToEdit;
   try {
@@ -520,11 +519,11 @@ const updateUserData = async (req, res, next) => {
   }
 
   console.log(userToEdit.identification);
-  try{
+  try {
     userToEdit.name.firstName = firstName;
     userToEdit.name.lastName = lastName;
     userToEdit.email = email;
-    userToEdit.identification = identification;  
+    userToEdit.identification = identification;
   } catch (err) {
     const error = new HttpError(
       "No pudimos guardar los cambios, por favor regístrate",
@@ -546,6 +545,32 @@ const updateUserData = async (req, res, next) => {
   res.status(200).json({ message: "Cambios guardados!" });
 };
 
+const getSurveys = async (req, res, next) => {
+  console.log("getSurveys");
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = new HttpError(
+      "Los valores introducidos no son validos. Intenta de nuevo",
+      422
+    );
+    return next(error);
+  }
+
+  // get all surveys
+  let allSurveys;
+try {
+  allSurveys = await Survey.find();
+  res.status(200).json({ message: "Cool!", allSurveys: allSurveys });
+} catch (err) {
+  const error = new HttpError(
+    "Los valores introducidos no son validos. Intenta de nuevo",
+    422
+  );
+  return next(error);
+}
+
+};
+
 exports.signup = signup;
 exports.login = login;
 exports.getAllUsers = getAllUsers;
@@ -553,3 +578,4 @@ exports.getUserInfo = getUserInfo;
 exports.postSurvey = postSurvey;
 exports.getUserById = getUserById;
 exports.updateUserData = updateUserData;
+exports.getSurveys = getSurveys;

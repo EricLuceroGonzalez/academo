@@ -35,5 +35,5 @@ router.post(
 );
 
 router.patch("/:uid", userController.updateUserData);
-
+router.get("/surveys", userController.getSurveys);
 module.exports = router;
