@@ -488,8 +488,6 @@ const getUserById = async (req, res, next) => {
 };
 
 const updateUserData = async (req, res, next) => {
-  console.log("updateUserData");
-
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const error = new HttpError(
@@ -500,11 +498,6 @@ const updateUserData = async (req, res, next) => {
   }
 
   const { firstName, lastName, email, identification } = req.body;
-
-  console.log(`req.params.uid: ${req.params.uid}`);
-  console.log(req.body);
-
-  console.log(`req.body.identification: ${req.body.identification}`);
 
   let userToEdit;
   try {
@@ -517,8 +510,6 @@ const updateUserData = async (req, res, next) => {
     );
     return next(error);
   }
-
-  console.log(userToEdit.identification);
   try {
     userToEdit.name.firstName = firstName;
     userToEdit.name.lastName = lastName;
@@ -533,7 +524,6 @@ const updateUserData = async (req, res, next) => {
   }
 
   try {
-    console.log(userToEdit);
     await userToEdit.save();
   } catch (err) {
     const error = new HttpError(
@@ -546,7 +536,7 @@ const updateUserData = async (req, res, next) => {
 };
 
 const getSurveys = async (req, res, next) => {
-  console.log("getSurveys");
+  // console.log("getSurveys");
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const error = new HttpError(
@@ -558,17 +548,37 @@ const getSurveys = async (req, res, next) => {
 
   // get all surveys
   let allSurveys;
-try {
-  allSurveys = await Survey.find();
-  res.status(200).json({ message: "Cool!", allSurveys: allSurveys });
-} catch (err) {
-  const error = new HttpError(
-    "Los valores introducidos no son validos. Intenta de nuevo",
-    422
-  );
-  return next(error);
-}
+  let allUsersArray = [];
+  try {
+    allUsersArray = await User.find();
+  } catch (err) {
+    const error = new HttpError(
+      "Hemos tenido un error buscando las encuestas. Intenta de nuevo",
+      422
+    );
+    return next(error);
+  }
+  let userHaveFilled = [];
+  let allUsers = allUsersArray.length;
 
+  try {
+    allSurveys = await Survey.find();
+    userHaveFilled = allUsersArray.filter((item) => item.submitSurvey === true);
+    res
+      .status(200)
+      .json({
+        message: "Cool!",
+        allSurveys: allSurveys,
+        users: allUsers,
+        userHaveFilled: userHaveFilled.length,
+      });
+  } catch (err) {
+    const error = new HttpError(
+      "Ha ocurrido un error enviando los resultados. Intenta de nuevo",
+      422
+    );
+    return next(error);
+  }
 };
 
 exports.signup = signup;
