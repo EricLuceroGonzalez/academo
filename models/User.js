@@ -35,8 +35,8 @@ const UserSchema = new Schema({
     {
       test: { type: mongoose.Types.ObjectId, ref: "Test" },
       testName: { type: String, required: false },
-      allAns: { type: Array, required: false },
-      allQuest: { type: Array, required: false },
+      badAns: { type: Array, required: false },
+      badQuest: { type: Array, required: false },
       allPts: { type: Array, required: false },
       goodAns: { type: Array, required: false },
       goodQuest: { type: Array, required: false },

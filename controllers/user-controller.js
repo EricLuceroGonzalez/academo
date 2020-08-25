@@ -560,7 +560,6 @@ const getSurveys = async (req, res, next) => {
   }
   let userHaveFilled = [];
   let allUsers = allUsersArray.length;
-
   try {
     allSurveys = await Survey.find();
     userHaveFilled = allUsersArray.filter((item) => item.submitSurvey === true);

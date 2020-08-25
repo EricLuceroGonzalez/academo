@@ -42,22 +42,25 @@ const getCourses = (req, res) => {
 };
 
 const getCourseDashboard = async (req, res, next) => {
-  user = req.params.usr;
-  // console.log(`user: ${user}`);
+  console.log('getCourseDashboard');
+  
+  userId = req.params.usr;
 
-  let usrTests = [];
+  let userExistingTests = [];
   try {
-    courses = await Course.find({ enroll: user }).populate("tests");
-    user = await User.findById(user);
+    courses = await Course.find({ enroll: userId }).populate("tests");    
+    user = await User.findById(userId);
+    
     user.testInfo.map((item) => {
-      // console.log(`usrTest: ${item.test}`);
-      usrTests.push({ grd: item.grade, testId: item.test });
+      userExistingTests.push({ grd: item.grade, testId: item.test });
     });
-    res.status(200).json({ allTests: courses[0], usrTests: usrTests });
+    res.status(200).json({ allTests: courses[0], userExistingTests: userExistingTests });
   } catch (err) {
-    // console.info("next()");
-    res.status(400).send(err);
-    next();
+    const error = new HttpError(
+      "No pudimos encontrar este usuario, por favor verifica la información.",
+      403
+    );
+    return next(error);
   }
 };
 

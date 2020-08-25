@@ -28,15 +28,14 @@ const postExam = async (req, res, next) => {
   }
   // Check if the user creator already exists:
   const {
-    theName,
     theId,
     totalPts,
     testId,
     testName,
     grade,
-    allAns,
-    ansQuest,
     allPts,
+    badAns,
+    badQuest,
     goodAns,
     goodQuest,
   } = req.body;
@@ -89,8 +88,8 @@ const postExam = async (req, res, next) => {
     totalPts: totalPts,
     testName: testName,
     grade: grade,
-    allAns: allAns,
-    ansQuest: ansQuest,
+    badAns: badAns,
+    badQuest: badQuest,
     allPts: allPts,
     goodAns: goodAns,
     goodQuest: goodQuest,
@@ -202,34 +201,72 @@ const getUserTest = async (req, res, next) => {
 };
 
 // To post a test to a course:
-const postNewTest = (req, res) => {
-  newTest = new Test(req.body);
-  newTest
-    .save()
-    .then((theTest) => {
-      // console.log(`The test: \n ${theTest._id} \n ${theTest.subject}`);
+const postNewTest = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = new HttpError(
+      "Los valores introducidos no son validos. Intenta de nuevo",
+      422
+    );
+    return next(error);
+  }
 
-      Course.findOneAndUpdate(
-        { _id: theTest.subject },
-        { $push: { tests: theTest.id } }
-      )
-        .then((subjc) => console.log(`Subjc added: ${subjc}`))
-        .catch((err) => console.log(`Subjc err: ${err}`));
+  let existingTest;
+  try {
+    existingTest = await Test.findOne({ testName: req.body.testName });
+  } catch (err) {
+    const error = new HttpError(
+      "Hemos tenido un error buscando las encuestas. Intenta de nuevo",
+      422
+    );
+    return next(error);
+  }
 
-      res.status(200).json({
-        success: true,
-        message: `Test ${theTest.id} Submitted!`,
-      });
-    })
-    .catch((err) => {
-      res.status(400).json({
-        success: false,
-        message: `Error on saving! \n ${err}`,
-      });
-    });
+  if (existingTest) {
+    const error = new HttpError(
+      "Ya existe una prueba con este nombre. Por favor, inicia sesión.",
+      422
+    );
+    return next(error);
+  }
+
+  const newTest = await new Test(req.body);
+  console.log("newTest:");
+  console.log(newTest);
+
+  try {
+    await newTest.save();
+  } catch (err) {
+    const error = new HttpError(
+      "Hemos tenido un error creando el test. Intenta de nuevo",
+      422
+    );
+    return next(error);
+  }
+
+  try {
+    await Course.findOneAndUpdate(
+      { _id: newTest.subject },
+      { $push: { tests: newTest._id } }
+    );
+  } catch (err) {
+    const error = new HttpError(
+      "Hemos tenido un error creando el test en el curso. Intenta de nuevo",
+      422
+    );
+    return next(error);
+  }
+
+  res.status(200).json({
+    success: true,
+    message: `Test ${newTest._id} Submitted!`,
+  });
 };
 
 const getATest = async (req, res, next) => {
+  console.log('getATest');
+  console.log(req.params.id);
+  
   try {
     let test;
     test = await Test.findById(req.params.id);

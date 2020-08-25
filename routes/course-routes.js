@@ -5,6 +5,6 @@ const router = express.Router();
 
 router.post("/newcourse", courseCtrl.postCourse);
 router.post("/courses", courseCtrl.getCourses);
-router.post("/coursesDashboard", courseCtrl.getCourseDashboard);
+router.get("/coursesDashboard/:usr", courseCtrl.getCourseDashboard);
 
 module.exports = router;
