@@ -270,7 +270,7 @@ const signup = async (req, res, next) => {
 // @route POST api/users/login
 // @desc Login user and return JWT token
 // @access Public
-const login = async (req, res, next) => {
+const login = async (req, res, next) => { 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const error = new HttpError(
@@ -287,7 +287,7 @@ const login = async (req, res, next) => {
     existingUser = await User.findOne({ email: email });
   } catch (err) {
     const error = new HttpError(
-      "No pudimos encontrar este usuario, por favor regístrate",
+      "Ha ocurrido un error, por favor intentalo de nuevo",
       403
     );
     return next(error);

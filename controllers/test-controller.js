@@ -50,10 +50,7 @@ const postExam = async (req, res, next) => {
     return next(error);
   }
 
-  if (!user) {
-    const error = new HttpError("Could not find user for provided id.", 404);
-    return next(error);
-  }
+  
   if (!testCollection) {
     const error = new HttpError("Could not find test for provided id.", 404);
     return next(error);
@@ -230,7 +227,7 @@ const postNewTest = async (req, res, next) => {
     return next(error);
   }
 
-  const newTest = await new Test(req.body);
+  const newTest = new Test(req.body);
   console.log("newTest:");
   console.log(newTest);
 

@@ -4,8 +4,8 @@ mongoose.set("useFindAndModify", false);
 // connect that mongoose with Mongo cluster
 
 // console.log(db_uri);
-prod_db = process.env.DB_URI,
-// prod_db = process.env.DB_TEST,
+prod_db = process.env.DB_URI
+// prod_db = process.env.DB_TEST
 
 mongoose.connect(
   prod_db,
