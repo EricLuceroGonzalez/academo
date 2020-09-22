@@ -50,7 +50,6 @@ const postExam = async (req, res, next) => {
     return next(error);
   }
 
-  
   if (!testCollection) {
     const error = new HttpError("Could not find test for provided id.", 404);
     return next(error);
@@ -208,6 +207,8 @@ const postNewTest = async (req, res, next) => {
     return next(error);
   }
 
+  console.log(req.body);
+
   let existingTest;
   try {
     existingTest = await Test.findOne({ testName: req.body.testName });
@@ -220,6 +221,9 @@ const postNewTest = async (req, res, next) => {
   }
 
   if (existingTest) {
+    console.log("\n\n existingTest");
+    // console.log(existingTest);
+  
     const error = new HttpError(
       "Ya existe una prueba con este nombre. Por favor, inicia sesión.",
       422
@@ -227,10 +231,17 @@ const postNewTest = async (req, res, next) => {
     return next(error);
   }
 
-  const newTest = new Test(req.body);
+  const newTest = await new Test({
+    testName: req.body.testName,
+    subject: req.body.subject, 
+    instructions: req.body.instructions,
+    contents:  req.body.contents,
+    description: req.body.description,
+    evaluation: req.body.evaluation,
+    questions: req.body.questions
+  });
   console.log("newTest:");
-  console.log(newTest);
-
+  // console.log(newTest);
   try {
     await newTest.save();
   } catch (err) {
@@ -246,6 +257,11 @@ const postNewTest = async (req, res, next) => {
       { _id: newTest.subject },
       { $push: { tests: newTest._id } }
     );
+    res.status(200).json({
+      success: true,
+      message: `Test ${newTest._id} Submitted!`,
+    });
+  
   } catch (err) {
     const error = new HttpError(
       "Hemos tenido un error creando el test en el curso. Intenta de nuevo",
@@ -254,16 +270,12 @@ const postNewTest = async (req, res, next) => {
     return next(error);
   }
 
-  res.status(200).json({
-    success: true,
-    message: `Test ${newTest._id} Submitted!`,
-  });
 };
 
 const getATest = async (req, res, next) => {
-  console.log('getATest');
+  console.log("getATest");
   console.log(req.params.id);
-  
+
   try {
     let test;
     test = await Test.findById(req.params.id);
