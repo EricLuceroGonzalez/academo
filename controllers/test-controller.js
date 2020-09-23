@@ -96,44 +96,59 @@ const postExam = async (req, res, next) => {
       from: process.env.mailUser, // sender address
       to: user.email, // list of receivers/
       subject: `Academo. ${user.name.firstName}, hemos recibido tu calificación 👍`, // Subject line
-      html: `<h3
-                  style="
-                    text-shadow: 3px 2px 1px black;
-                    color: white;
-                    background-color: rgb(116, 35, 153);
-                    font-weight: bold;
-                    font-size: 1.25em;
-                    padding: 7px 8px;
-                    width: 97%;
-                    box-shadow: 6px 6px aqua;
-                  "
-                >
-                  Academo
-                  <span role="img" aria-label="rocket">
-                    🚀
-                  </span>
-                </h3>
-                <div
-                  style="
-                    background-color: rgb(226, 225, 226);
-                    border: 2px solid rgb(116, 35, 153);
-                    width: 95%;
-                    font-size: 1.15em;
-                    font-weight: 700;
-                    padding: 4px 12px;
-                    color: rgb(116, 35, 153);
-                  "
-                >
-                <div>Hola, <b>${user.name.firstName}</b>, hemos recibido el 
-                <strong style="padding: 3px 6px; background-color: rgb(40, 210, 105);">${testName}</strong>
-                </div>
-                <div>Has obtenido una calificación de 
-                <strong style="padding: 3px 6px; background-color: rgb(40, 210, 105);">${grade}</strong>
-                <span role="img" aria-label="${
-                  grade < 60 ? "think-face" : "rocket"
-                }"> ${grade < 60 ? "🤔" : "🚀"} </span>
-                </div>
-                </div>`,
+      html: `<!DOCTYPE html>
+      <html lang="en">
+        <body>
+          <div style="max-width: 65%; margin: 10px auto;">
+            <style>
+              @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@1,900&display=swap');
+              </style> 
+            <h3
+              style="
+                text-shadow: 3px 2px 1px black;
+                color: white;
+                background-color: #7d64ff;
+                font-weight: bold;
+                font-size: 1.5em;
+                padding: 7px 8px;
+                width: 97%;
+                box-shadow: 3px 3px aqua;
+                font-family: 'Montserrat', sans-serif;
+              "
+            >
+              Academo
+            </h3>
+            <div
+            style="
+              background-color: rgb(226, 225, 226);
+              border: 2px solid #7d64ff;
+              width: 95%;
+              font-size: 1.35em;
+              font-weight: 700;
+              padding: 4px 12px;
+              color: #7d64ff;
+              font-family: 'Montserrat', sans-serif;
+            "
+          >
+          <div>Hola, <b>${user.name.firstName}</b>, hemos recibido el 
+          <strong style="padding: 3px 6px; background-color: #57FFB3;">${testName}</strong>
+          </div>
+          <div>Has obtenido una calificación de 
+          <strong style="padding: 3px 6px; background-color: #57FFB3;">${grade}</strong>
+          <span role="img" aria-label="${
+            grade < 60 ? "think-face" : "rocket"
+          }"> ${grade < 60 ? "🤔" : "🚀"} </span>
+          </div>
+          </div>
+          <div style="text-align: center; margin: 140px auto 10px auto;">
+            <img
+            width="160px"
+            alt="academo logo is an A in a circle with an arrow"
+            src="https://res.cloudinary.com/dcvnw6hvt/image/upload/v1599179407/Academo/Identidy/academoLogoC_oxeawu.png">
+          </div>
+        </div>
+        </body>
+      </html>`,
     });
   };
 
@@ -223,7 +238,7 @@ const postNewTest = async (req, res, next) => {
   if (existingTest) {
     console.log("\n\n existingTest");
     // console.log(existingTest);
-  
+
     const error = new HttpError(
       "Ya existe una prueba con este nombre. Por favor, inicia sesión.",
       422
@@ -233,12 +248,12 @@ const postNewTest = async (req, res, next) => {
 
   const newTest = await new Test({
     testName: req.body.testName,
-    subject: req.body.subject, 
+    subject: req.body.subject,
     instructions: req.body.instructions,
-    contents:  req.body.contents,
+    contents: req.body.contents,
     description: req.body.description,
     evaluation: req.body.evaluation,
-    questions: req.body.questions
+    questions: req.body.questions,
   });
   console.log("newTest:");
   // console.log(newTest);
@@ -261,7 +276,6 @@ const postNewTest = async (req, res, next) => {
       success: true,
       message: `Test ${newTest._id} Submitted!`,
     });
-  
   } catch (err) {
     const error = new HttpError(
       "Hemos tenido un error creando el test en el curso. Intenta de nuevo",
@@ -269,7 +283,6 @@ const postNewTest = async (req, res, next) => {
     );
     return next(error);
   }
-
 };
 
 const getATest = async (req, res, next) => {

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <body>
+    <div style="max-width: 65%; margin: 10px auto;">
+      <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@1,900&display=swap');
+        </style> 
+      <h3
+        style="
+          text-shadow: 3px 2px 1px black;
+          color: white;
+          background-color: #7d64ff;
+          font-weight: bold;
+          font-size: 1.5em;
+          padding: 7px 8px;
+          width: 97%;
+          box-shadow: 3px 3px aqua;
+          font-family: 'Montserrat', sans-serif;
+        "
+      >
+        Academo
+      </h3>
+      <div
+      style="
+        background-color: rgb(226, 225, 226);
+        border: 2px solid #7d64ff;
+        width: 95%;
+        font-size: 1.35em;
+        font-weight: 700;
+        padding: 4px 12px;
+        color: #7d64ff;
+        font-family: 'Montserrat', sans-serif;
+      "
+    >
+    <div>Hola, <b>${user.name.firstName}</b>, hemos recibido el 
+    <strong style="padding: 3px 6px; background-color: #57FFB3;">${testName}</strong>
+    </div>
+    <div>Has obtenido una calificación de 
+    <strong style="padding: 3px 6px; background-color: #57FFB3;">${grade}</strong>
+    <span role="img" aria-label="${
+      grade < 60 ? "think-face" : "rocket"
+    }"> ${grade < 60 ? "🤔" : "🚀"} </span>
+    </div>
+    </div>
+    <div style="text-align: center; margin: 140px auto 10px auto;">
+      <img
+      width="160px"
+      alt="academo logo is an A in a circle with an arrow"
+      src="https://res.cloudinary.com/dcvnw6hvt/image/upload/v1599179407/Academo/Identidy/academoLogoC_oxeawu.png">
+    </div>
+  </div>
+  </body>
+</html>
