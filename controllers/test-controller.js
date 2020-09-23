@@ -110,7 +110,7 @@ const postExam = async (req, res, next) => {
                 background-color: #7d64ff;
                 font-weight: bold;
                 font-size: 1.5em;
-                padding: 7px 8px;
+                padding: 27px 28px;
                 width: 97%;
                 box-shadow: 3px 3px aqua;
                 font-family: 'Montserrat', sans-serif;
@@ -125,7 +125,7 @@ const postExam = async (req, res, next) => {
               width: 95%;
               font-size: 1.35em;
               font-weight: 700;
-              padding: 4px 12px;
+              padding: 6rem 2rem;
               color: #7d64ff;
               font-family: 'Montserrat', sans-serif;
             "
@@ -133,16 +133,18 @@ const postExam = async (req, res, next) => {
           <div>Hola, <b>${user.name.firstName}</b>, hemos recibido el 
           <strong style="padding: 3px 6px; background-color: #57FFB3;">${testName}</strong>
           </div>
-          <div>Has obtenido una calificación de 
-          <strong style="padding: 3px 6px; background-color: #57FFB3;">${grade}</strong>
-          <span role="img" aria-label="${
-            grade < 60 ? "think-face" : "rocket"
-          }"> ${grade < 60 ? "🤔" : "🚀"} </span>
+          <div style="margin-top: 80px;">Has obtenido una calificación de:
+      <div style="font-size: 2rem; text-align: center;">
+        <strong style="padding: 3px 6px; background-color: #57FFB3;">${grade}</strong>
+        <span role="img" aria-label="${
+          grade < 60 ? "think-face" : "rocket"
+        }"> ${grade < 60 ? "🤔" : "🚀"} </span>
+      </div>
           </div>
           </div>
-          <div style="text-align: center; margin: 140px auto 10px auto;">
+          <div style="text-align: center; margin: 140px auto 80px auto;">
             <img
-            width="160px"
+            width="120px"
             alt="academo logo is an A in a circle with an arrow"
             src="https://res.cloudinary.com/dcvnw6hvt/image/upload/v1599179407/Academo/Identidy/academoLogoC_oxeawu.png">
           </div>
