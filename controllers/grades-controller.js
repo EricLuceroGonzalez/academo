@@ -1,20 +1,48 @@
 const express = require("express");
-const router = express.Router();
-const bcrypt = require("bcryptjs");
-const mongoose = require("mongoose");
-const jwt = require("jsonwebtoken");
-const keys = require("../config/keys");
+const { validationResult } = require("express-validator");
 const HttpError = require("../models/http-error");
 const User = require("../models/User");
 const Test = require("../models/Test");
 const Course = require("../models/Courses");
 
-getGrades = (req, res) => {
-  User.find()
-    .then((data) => {
-      res.status(200).send(data);
-    })
-    .catch((err) => res.status(400).send(err));
+getGrades = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = new HttpError(
+      "Los valores introducidos no son validos. Intenta de nuevo",
+      422
+    );
+    return next(error);
+  }
+
+  let courseName = req.params.courseName;
+  let course;
+
+  try {
+    course = await Course.findOne({ courseName: courseName });
+  } catch (err) {
+    const error = new HttpError(
+      "Este curso no ha sido hallado. Intenta de nuevo",
+      422
+    );
+    return next(error);
+  }
+
+  if (!course) {
+    const error = new HttpError("Intenta de nuevo. El curso no existe.", 422);
+    return next(error);
+  }
+  let allUsers;
+  try {
+    allUsers = await User.find({ subject: course._id });
+    res.status(200).json({ success: true, data: allUsers });
+  } catch (err) {
+    res.status(400).json({
+      success: false,
+      message: `No course found! \n ${err}`,
+    });
+    next();
+  }
 };
 
 getACourse = async (req, res, next) => {
