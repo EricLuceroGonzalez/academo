@@ -35,7 +35,13 @@ getGrades = async (req, res, next) => {
   let allUsers;
   try {
     allUsers = await User.find({ subject: course._id });
-    res.status(200).json({ success: true, data: allUsers });
+    res
+      .status(200)
+      .json({
+        success: true,
+        data: allUsers,
+        testsLength: course.tests.length,
+      });
   } catch (err) {
     res.status(400).json({
       success: false,
