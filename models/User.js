@@ -26,7 +26,7 @@ const UserSchema = new Schema({
     type: String,
     required: false,
   },
-  class: { type: String, required: false },
+  courseClass: { type: String, required: false },
   subject: { type: mongoose.Types.ObjectId, ref: "Course" },
   date: {
     type: Date,
