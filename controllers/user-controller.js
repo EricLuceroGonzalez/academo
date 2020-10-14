@@ -401,6 +401,7 @@ const getUserInfo = async (req, res, next) => {
     visits: thisUser.visits,
     lastEntry: thisUser.lastEntry,
     submitSurvey: thisUser.submitSurvey,
+    courseClass:thisUser.courseClass,
     email: thisUser.email,
     name: thisUser.name,
   });
