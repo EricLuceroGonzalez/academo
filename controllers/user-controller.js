@@ -270,7 +270,7 @@ const signup = async (req, res, next) => {
 // @route POST api/users/login
 // @desc Login user and return JWT token
 // @access Public
-const login = async (req, res, next) => { 
+const login = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const error = new HttpError(
@@ -497,7 +497,7 @@ const updateUserData = async (req, res, next) => {
     return next(error);
   }
 
-  const { firstName, lastName, email, identification } = req.body;
+  const { firstName, lastName, email, courseClass, identification } = req.body;
 
   let userToEdit;
   try {
@@ -514,6 +514,7 @@ const updateUserData = async (req, res, next) => {
     userToEdit.name.firstName = firstName;
     userToEdit.name.lastName = lastName;
     userToEdit.email = email;
+    userToEdit.courseClass = courseClass;
     userToEdit.identification = identification;
   } catch (err) {
     const error = new HttpError(
@@ -563,14 +564,12 @@ const getSurveys = async (req, res, next) => {
   try {
     allSurveys = await Survey.find();
     userHaveFilled = allUsersArray.filter((item) => item.submitSurvey === true);
-    res
-      .status(200)
-      .json({
-        message: "Cool!",
-        allSurveys: allSurveys,
-        users: allUsers,
-        userHaveFilled: userHaveFilled.length,
-      });
+    res.status(200).json({
+      message: "Cool!",
+      allSurveys: allSurveys,
+      users: allUsers,
+      userHaveFilled: userHaveFilled.length,
+    });
   } catch (err) {
     const error = new HttpError(
       "Ha ocurrido un error enviando los resultados. Intenta de nuevo",
