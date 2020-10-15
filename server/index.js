@@ -7,7 +7,7 @@ const users = require("../routes/user-routes");
 const tests = require("../routes/test-routes");
 const grades = require("../routes/grade-routes");
 const courses = require("../routes/course-routes");
-
+const mails = require("../routes/mail-routes");
 dotenv.config();
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -30,6 +30,7 @@ app.use("/api/user", users);
 app.use("/api/test", tests);
 app.use("/api/grade", grades);
 app.use("/api/course", courses);
+app.use("/api/mail", mails);
 
 // Error handler when no endpoint or direction is found "NEXT()""
 app.use((req, res, next) => {

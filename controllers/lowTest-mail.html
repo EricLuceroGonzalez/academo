@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+      <html lang="en">
+        <body>
+          <div style="max-width: 65%; margin: 10px auto;">
+            <style>
+              @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@1,900&display=swap');
+              </style> 
+            <h3
+              style="
+                text-shadow: 3px 2px 1px black;
+                color: white;
+                background-color: #7d64ff;
+                font-weight: bold;
+                font-size: 1.5em;
+                padding: 22px 28px;
+                width: 97%;
+                box-shadow: 3px 3px aqua;
+              "
+            >
+              Academo
+            </h3>
+            <div
+            style="
+              background-color: rgb(226, 225, 226);
+              border: 2px solid #7d64ff;
+              width: 95%;
+              font-size: 1.15em;
+              font-weight: 700;
+              padding: 6rem 2rem;
+              color: #7d64ff;
+            "
+          >
+          <div>Hola, <b style="padding: 3px 6px; color: rgb(58, 55, 241);">${user.name.firstName}</b>, 
+            Si estas recibiendo este correo, probablemente necesites visitar Academo pronto.
+            <br>
+          Hemos notado que has entrado unas 
+          <strong style="padding: 3px 6px; color: rgb(58, 55, 241);">${
+            user.visits
+          }</strong>
+           veces a la plataforma.
+           <br>
+          La ultima visita fue
+          <strong style="padding: 3px 6px; color: rgb(58, 55, 241);">${moment(
+            user.lastEntry
+          )
+            .startOf("hour")
+            .fromNow()}</strong>
+          <br>
+        <br>
+          En total, tienes 
+          <strong style="padding: 3px 6px; color: rgb(58, 55, 241);">${
+            user.testInfo.length
+          }</strong>
+          talleres realizados, lo cual implica que debes hacer los que faltan, antes de la proxima semana.
+
+          </div>
+          <div style="margin-top: 80px;">
+Recuerda que las notas de estos talleres forman un tercio de la nota total del curso.
+Si tienes algún impedimento para resolverlos, responde este email con tus dudas.
+          </div>
+          </div>
+          <div style="text-align: center; margin: 140px auto 80px auto;">
+            <img
+            width="120px"
+            alt="academo logo is an A in a circle with an arrow"
+            src="https://res.cloudinary.com/dcvnw6hvt/image/upload/v1599179407/Academo/Identidy/academoLogoC_oxeawu.png">
+          </div>
+        </div>
+        </body>
+      </html>
