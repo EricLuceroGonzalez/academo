@@ -251,6 +251,7 @@ const postNewTest = async (req, res, next) => {
   const newTest = await new Test({
     testName: req.body.testName,
     subject: req.body.subject,
+    image: req.body.questionImage,
     instructions: req.body.instructions,
     contents: req.body.contents,
     description: req.body.description,
