@@ -84,7 +84,6 @@ const signup = async (req, res, next) => {
     );
     return next(error);
   }
-
   // Create user:
   const createdUser = await new User({
     name: {
@@ -124,7 +123,7 @@ const signup = async (req, res, next) => {
     token = jwt.sign(
       { userId: createdUser._id, email: createdUser.email },
       process.env.JWT_KEY,
-      { expiresIn: "3s" }
+      { expiresIn: "30s" }
     );
   } catch (err) {
     const error = new HttpError(
@@ -404,6 +403,7 @@ const getUserInfo = async (req, res, next) => {
     courseClass:thisUser.courseClass,
     email: thisUser.email,
     name: thisUser.name,
+    subject: thisUser.subject
   });
 };
 

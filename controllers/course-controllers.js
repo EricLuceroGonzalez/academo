@@ -5,7 +5,6 @@ const User = require("../models/User");
 const Test = require("../models/Test");
 const Course = require("../models/Courses");
 
-
 const postCourse = (req, res) => {
   // console.log(req.body);
   const errors = validationResult(req);
@@ -42,19 +41,19 @@ const getCourses = (req, res) => {
 };
 
 const getCourseDashboard = async (req, res, next) => {
-  console.log('getCourseDashboard');
-  
   userId = req.params.usr;
 
   let userExistingTests = [];
   try {
-    courses = await Course.find({ enroll: userId }).populate("tests");    
+    courses = await Course.find({ enroll: userId }).populate("tests");
     user = await User.findById(userId);
-    
+
     user.testInfo.map((item) => {
       userExistingTests.push({ grd: item.grade, testId: item.test });
     });
-    res.status(200).json({ allTests: courses[0], userExistingTests: userExistingTests });
+    res
+      .status(200)
+      .json({ allTests: courses[0], userExistingTests: userExistingTests });
   } catch (err) {
     const error = new HttpError(
       "No pudimos encontrar este usuario, por favor verifica la información.",
