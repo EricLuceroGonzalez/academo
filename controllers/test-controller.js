@@ -250,7 +250,7 @@ const postNewTest = async (req, res, next) => {
   //   return next(error);
   // }
 
-  const newTest = new Test({
+  const newTest = await new Test({
     testName: req.body.testName,
     subject: req.body.subject,
     image: req.body.questionImage,
@@ -268,7 +268,7 @@ const postNewTest = async (req, res, next) => {
     await newTest.save();
   } catch (err) {
     const error = new HttpError(
-      "Hemos tenido un error creando el test.",
+      "Hemos tenido un error creando el test... 😟",
       422
     );
     return next(error);
