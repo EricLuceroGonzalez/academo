@@ -269,7 +269,7 @@ const postNewTest = async (req, res, next) => {
     await newTest.save();
   } catch (err) {
     const error = new HttpError(
-      "Hemos tenido un error creando el test. Intenta de nuevo",
+      "Hemos tenido un error creando el test.",
       422
     );
     return next(error);
