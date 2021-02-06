@@ -215,6 +215,8 @@ const getUserTest = async (req, res, next) => {
 
 // To post a test to a course:
 const postNewTest = async (req, res, next) => {
+  console.log('To post a test to a course:');
+  
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const error = new HttpError(
@@ -248,7 +250,7 @@ const postNewTest = async (req, res, next) => {
     return next(error);
   }
 
-  const newTest = await new Test({
+  const newTest = new Test({
     testName: req.body.testName,
     subject: req.body.subject,
     image: req.body.questionImage,
@@ -258,8 +260,11 @@ const postNewTest = async (req, res, next) => {
     evaluation: req.body.evaluation,
     questions: req.body.questions,
   });
-  console.log("newTest:");
+  console.log('---------------------');
+  
   // console.log(newTest);
+  console.log(`newTest.subject: ${newTest.subject}`);
+  
   try {
     await newTest.save();
   } catch (err) {
@@ -272,7 +277,7 @@ const postNewTest = async (req, res, next) => {
 
   try {
     await Course.findOneAndUpdate(
-      { _courseName: newTest.subject },
+      { _id: newTest.subject },
       { $push: { tests: newTest._id } }
     );
     res.status(200).json({
