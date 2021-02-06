@@ -215,7 +215,7 @@ const getUserTest = async (req, res, next) => {
 
 // To post a test to a course:
 const postNewTest = async (req, res, next) => {
-  console.log('To post a test to a course:');
+  // console.log('To post a test to a course:');
   
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -228,27 +228,27 @@ const postNewTest = async (req, res, next) => {
 
   console.log(req.body);
 
-  let existingTest;
-  try {
-    existingTest = await Test.findOne({ testName: req.body.testName });
-  } catch (err) {
-    const error = new HttpError(
-      "Hemos tenido un error buscando las encuestas. Intenta de nuevo",
-      422
-    );
-    return next(error);
-  }
+  // let existingTest;
+  // try {
+  //   existingTest = await Test.findOne({ testName: req.body.testName });
+  // } catch (err) {
+  //   const error = new HttpError(
+  //     "Hemos tenido un error buscando las encuestas. Intenta de nuevo",
+  //     422
+  //   );
+  //   return next(error);
+  // }
 
-  if (existingTest) {
-    console.log("\n\n existingTest");
-    // console.log(existingTest);
+  // if (existingTest) {
+  //   console.log("\n\n existingTest");
+  //   // console.log(existingTest);
 
-    const error = new HttpError(
-      "Ya existe una prueba con este nombre. Por favor, inicia sesión.",
-      422
-    );
-    return next(error);
-  }
+  //   const error = new HttpError(
+  //     "Ya existe una prueba con este nombre. Por favor, inicia sesión.",
+  //     422
+  //   );
+  //   return next(error);
+  // }
 
   const newTest = new Test({
     testName: req.body.testName,
@@ -260,11 +260,10 @@ const postNewTest = async (req, res, next) => {
     evaluation: req.body.evaluation,
     questions: req.body.questions,
   });
-  console.log('---------------------');
-  
+  // console.log('\n---------------------');
   // console.log(newTest);
-  console.log(`newTest.subject: ${newTest.subject}`);
-  
+  // console.log(`newTest.subject: ${newTest.subject}`);
+  // console.log('\n---------------------');
   try {
     await newTest.save();
   } catch (err) {
@@ -277,7 +276,7 @@ const postNewTest = async (req, res, next) => {
 
   try {
     await Course.findOneAndUpdate(
-      { _id: newTest.subject },
+      { _id: req.body.subject },
       { $push: { tests: newTest._id } }
     );
     res.status(200).json({
