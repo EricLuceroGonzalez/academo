@@ -24,12 +24,12 @@ const TestSchema = new Schema({
       },
       value: {
         type: Number,
-        required: true,
+        // required: true,
         default: 1,
       },
       pts: {
         type: Number,
-        required: true,
+        // required: true,
         default: 0,
       },
       options: [
@@ -47,7 +47,7 @@ const TestSchema = new Schema({
     required: false,
   },
   evaluation: { type: String, required: true },
-  disabled: { type: Boolean, required: true, default: false },
+  disabled: { type: Boolean, required: true, default: true },
   uploadDate: { type: Date, required: true, default: Date.now },
   description: { type: String, required: true },
   contents: { type: String, required: true },

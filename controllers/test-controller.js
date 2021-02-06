@@ -214,9 +214,7 @@ const getUserTest = async (req, res, next) => {
 };
 
 // To post a test to a course:
-const postNewTest = async (req, res, next) => {
-  // console.log('To post a test to a course:');
-  
+const postNewTest = async (req, res, next) => { 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const error = new HttpError(
@@ -226,49 +224,43 @@ const postNewTest = async (req, res, next) => {
     return next(error);
   }
 
-  console.log(req.body);
+  let existingTest;
+  try {
+    existingTest = await Test.findOne({ description: req.body.description });
+  } catch (err) {
+    const error = new HttpError(
+      "Hemos tenido un error buscando las encuestas. Intenta de nuevo",
+      422
+    );
+    return next(error);
+  }
 
-  // let existingTest;
-  // try {
-  //   existingTest = await Test.findOne({ testName: req.body.testName });
-  // } catch (err) {
-  //   const error = new HttpError(
-  //     "Hemos tenido un error buscando las encuestas. Intenta de nuevo",
-  //     422
-  //   );
-  //   return next(error);
-  // }
+  if (existingTest) {
+    const error = new HttpError(
+      "Ya existe una prueba con este nombre. Por favor, inicia sesión.",
+      422
+    );
+    return next(error);
+  }
 
-  // if (existingTest) {
-  //   console.log("\n\n existingTest");
-  //   // console.log(existingTest);
-
-  //   const error = new HttpError(
-  //     "Ya existe una prueba con este nombre. Por favor, inicia sesión.",
-  //     422
-  //   );
-  //   return next(error);
-  // }
-
-  const newTest = await new Test({
+  const newTest = new Test({
     testName: req.body.testName,
     subject: req.body.subject,
-    image: req.body.questionImage,
     instructions: req.body.instructions,
     contents: req.body.contents,
     description: req.body.description,
     evaluation: req.body.evaluation,
     questions: req.body.questions,
   });
-  // console.log('\n---------------------');
-  // console.log(newTest);
-  // console.log(`newTest.subject: ${newTest.subject}`);
-  // console.log('\n---------------------');
+  
   try {
+    console.log('in here');
     await newTest.save();
   } catch (err) {
+    console.log(err);
+    
     const error = new HttpError(
-      "Hemos tenido un error creando el test... 😟",
+      "Ha ocurrido un error al crear el test.. 😟",
       422
     );
     return next(error);
