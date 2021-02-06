@@ -272,7 +272,7 @@ const postNewTest = async (req, res, next) => {
 
   try {
     await Course.findOneAndUpdate(
-      { _id: newTest.subject },
+      { _courseName: newTest.subject },
       { $push: { tests: newTest._id } }
     );
     res.status(200).json({

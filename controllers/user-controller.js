@@ -14,7 +14,6 @@ const Course = require("../models/Courses");
 // @desc Register user
 // @access Public
 const signup = async (req, res, next) => {
-  // Form validation
   //  console.log("\nbackend register");
   //  console.log(req.body);
 
