@@ -133,7 +133,7 @@ const signup = async (req, res, next) => {
     return next(error);
   }
   // Send Registration Mail
-  await registerMail(createdUser);
+  await registerMail(createdUser, req.body.password);
 
   res.status(201).json({
     name: createdUser.firstName,

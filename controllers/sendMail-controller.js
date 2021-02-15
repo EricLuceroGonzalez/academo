@@ -4,20 +4,20 @@ const nodemailer = require("nodemailer");
 const HttpError = require("../models/http-error");
 
 var transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.mailUser,
-      pass: process.env.mailPas,
-    },
-  });
+  service: "gmail",
+  auth: {
+    user: process.env.mailUser,
+    pass: process.env.mailPas,
+  },
+});
 
-const testMail = async (user) => {
-  await transporter.sendMail({
-    from: process.env.EMAIL_USRNME, // sender address
+const testMail = async (user, grade, testName) => {
+  transporter.sendMail({
+    from: process.env.mailUser, // sender address
     to: user.email, // list of receivers/
-    subject: `<!DOCTYPE html>
+    subject: `Hola. ${user.name.firstName}, hemos recibido tu calificación 👍`, // Subject line
+    html: `<!DOCTYPE html>
     <html lang="en">
-    
     <body>
         <div style="max-width: 85%; margin: 10px auto;">
             <style>
@@ -66,14 +66,13 @@ const testMail = async (user) => {
   });
 };
 
-const registerMail = async (user) => {
+const registerMail = async (user,passwrd) => {
   // NodeMail Send:
-  await transporter.sendMail(
-    {
-      from: process.env.mailUser, // sender address
-      to: email, // list of receivers
-      subject: `Academo.xyz | Gracias ${user.name.firstName}. Tu cuenta se ha creado.`, // Subject line
-      html: `<!DOCTYPE html>
+  transporter.sendMail({
+    from: process.env.mailUser, // sender address
+    to: user.email, // list of receivers
+    subject: `Academo.xyz | Gracias ${user.name.firstName}. Tu cuenta se ha creado. 😊`, // Subject line
+    html: `<!DOCTYPE html>
       <html lang="en">
       <style>
           @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@1,900&display=swap');
@@ -113,7 +112,7 @@ const registerMail = async (user) => {
               <div>
                 Tu contraseña es:<strong
                   style="background-color: #57FFB3; padding: 3px 12px"
-                  >${user.password}</strong
+                  >${passwrd}</strong
                 >
                 <span role="img" aria-label="rocket"> 🔑 </span>
               </div>
@@ -168,8 +167,7 @@ const registerMail = async (user) => {
           </div>
         </body>
       </html>`,
-    },
-  );
+  });
 };
 
 exports.testMail = testMail;

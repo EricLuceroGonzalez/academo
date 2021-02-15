@@ -107,8 +107,8 @@ const postExam = async (req, res, next) => {
       }
     }
     await user.save({ session: sess }); // ---> Update now with the place
-    await sess.commitTransaction(); // ---> Changes will commit
-    await testMail(user);
+    await sess.commitTransaction(); // ---> Changes will commit   
+    await testMail(user, grade, testName);
     res.status(201).json({ message: "Test accepted" });
   } catch (err) {
     const error = new HttpError(
