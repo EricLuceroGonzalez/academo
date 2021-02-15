@@ -1,16 +1,15 @@
 const express = require("express");
-
-const HttpError = require("../models/http-error");
-
 // Nodemailer init:
 const nodemailer = require("nodemailer");
+const HttpError = require("../models/http-error");
+
 var transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.mailUser,
-    pass: process.env.mailPas,
-  },
-});
+    service: "gmail",
+    auth: {
+      user: process.env.mailUser,
+      pass: process.env.mailPas,
+    },
+  });
 
 const testMail = async (user) => {
   await transporter.sendMail({
@@ -68,14 +67,6 @@ const testMail = async (user) => {
 };
 
 const registerMail = async (user) => {
-  // Define transporter to login to mail sender account
-  var transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.mailUser,
-      pass: process.env.mailPas,
-    },
-  });
   // NodeMail Send:
   await transporter.sendMail(
     {
@@ -178,7 +169,6 @@ const registerMail = async (user) => {
         </body>
       </html>`,
     },
-    (error, info) => {}
   );
 };
 
