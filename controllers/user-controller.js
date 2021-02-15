@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 var nodemailer = require("nodemailer");
 const { validationResult } = require("express-validator");
+const { registerMail } = require("./sendMail-controller");
 const bcrypt = require("bcryptjs");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
@@ -131,132 +132,8 @@ const signup = async (req, res, next) => {
     );
     return next(error);
   }
-
-  // Define transporter to login to mail sender account
-  var transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.mailUser,
-      pass: process.env.mailPas,
-    },
-  });
-  // NodeMail Send:
-  await transporter.sendMail(
-    {
-      from: process.env.mailUser, // sender address
-      to: email, // list of receivers
-      subject: `Academo.xyz | Gracias ${firstName}. Tu cuenta se ha creado.`, // Subject line
-      html: `<div style="min-width: 65%">
-      <h3
-      style="
-        color: white;
-        background-color: rgb(156, 0, 228);
-        font-weight: bold;
-        padding: 5rem 2rem;
-        font-size: 2rem;
-        width: 90%;
-      "
-    >
-      Academo.xyz
-      <span role="img" aria-label="rocket">
-        🚀
-      </span>
-    </h3>
-    <div
-      style="
-        font-family: Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-        background-color: rgb(241, 241, 241);
-        border: 12px solid rgb(156, 0, 228);
-        width: 90%;
-        font-size: 1.2rem;
-        padding: 4rem 2rem;
-      "
-    >
-      <div>
-        Hola,
-        <strong style="background-color: #dcffe4; padding: 3px 12px;">
-          ${firstName},</strong
-        >
-      </div>
-      <div>
-        Tu cuenta en <a href="https://www.academo.xyz">academo.xyz</a> ha sido
-        registrada.
-        <span role="img" aria-label="rocket">
-          ✅
-        </span>
-      </div>
-      <div>
-        Tu contraseña es:<strong
-          style="background-color: #dcffe4; padding: 3px 12px;"
-          >${password}</strong
-        >
-        <span role="img" aria-label="rocket">
-          🔑
-        </span>
-      </div>
-      <div style="margin-top: 3rem;">
-        En <a href="https://www.academo.xyz">academo.xyz</a> podrás:
-        <ol>
-          <li>
-            Hacer los talleres a tu tiempo.
-            <span role="img" aria-label="rocket">
-              ⏱️
-            </span>
-          </li>
-          <li>
-            Conocer instantáneamente tus respuestas.
-            <span role="img" aria-label="rocket">
-              ⚡
-            </span>
-          </li>
-          <li>
-            Corregir las veces que el sistema lo permita.
-            <span role="img" aria-label="rocket">
-              🐙
-            </span>
-          </li>
-          <li>
-            Saber tus calificaciones a tiempo.
-            <span role="img" aria-label="rocket">
-              📅
-            </span>
-          </li>
-          <li>
-            Ingresar a tu cuenta personal desde tu computadora o desde tu
-            celular.
-            <span role="img" aria-label="rocket">
-              📱
-            </span>
-          </li>
-        </ol>
-      </div>
-      <div style="margin-top: 3rem; width: 95%;">
-        <p>
-          Al iniciar sesión, llegarás a una sección llamada
-          <span style="background-color: #dcffe4; padding: 5px 12px;"
-            >Dashboard</span
-          >. 
-          </p>
-          <p>
-          En esta sección encontrarás tu información, el acceso a talleres y
-          las notas de los mismos. No sin antes llenar una encuesta, totalmente
-          confidencial, que no guarda información del autor de la misma.
-        </p>
-      </div>
-      <div style="margin-top: 15%;">
-        <p>Gracias por crear tu cuenta.</p>
-      </div>
-      <div style="margin-top: 12%; color: rgb(116, 35, 153);">
-        <p>Cualquier consulta escribe al correo:</p>
-        <p>
-          ericlucero501@gmail.com
-        </p>
-      </div>
-    </div>
-    </div>`,
-    },
-    (error, info) => {}
-  );
+  // Send Registration Mail
+  await registerMail(createdUser);
 
   res.status(201).json({
     name: createdUser.firstName,
@@ -399,10 +276,10 @@ const getUserInfo = async (req, res, next) => {
     visits: thisUser.visits,
     lastEntry: thisUser.lastEntry,
     submitSurvey: thisUser.submitSurvey,
-    courseClass:thisUser.courseClass,
+    courseClass: thisUser.courseClass,
     email: thisUser.email,
     name: thisUser.name,
-    subject: thisUser.subject
+    subject: thisUser.subject,
   });
 };
 

@@ -2,22 +2,11 @@
 const mongoose = require("mongoose");
 const HttpError = require("../models/http-error");
 const { validationResult } = require("express-validator");
-
+const { testMail } = require("./sendMail-controller");
 const User = require("../models/User");
 const Test = require("../models/Test");
 const Course = require("../models/Courses");
 const Image = require("../models/Image-Model");
-
-// Import nodemailer
-var nodemailer = require("nodemailer");
-// Define transporter to login to mail sender account
-var transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.mailUser,
-    pass: process.env.mailPas,
-  },
-});
 
 const postExam = async (req, res, next) => {
   const errors = validationResult(req);
@@ -91,69 +80,6 @@ const postExam = async (req, res, next) => {
     goodQuest: goodQuest,
   };
 
-  const sendMail = async (user) => {
-    await transporter.sendMail({
-      from: process.env.mailUser, // sender address
-      to: user.email, // list of receivers/
-      subject: `Academo. ${user.name.firstName}, hemos recibido tu calificación 👍`, // Subject line
-      html: `<!DOCTYPE html>
-      <html lang="en">
-        <body>
-          <div style="max-width: 65%; margin: 10px auto;">
-            <style>
-              @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@1,900&display=swap');
-              </style> 
-            <h3
-              style="
-                text-shadow: 3px 2px 1px black;
-                color: white;
-                background-color: #7d64ff;
-                font-weight: bold;
-                font-size: 1.5em;
-                padding: 27px 28px;
-                width: 97%;
-                box-shadow: 3px 3px aqua;
-                font-family: 'Montserrat', sans-serif;
-              "
-            >
-              Academo
-            </h3>
-            <div
-            style="
-              background-color: rgb(226, 225, 226);
-              border: 2px solid #7d64ff;
-              width: 95%;
-              font-size: 1.35em;
-              font-weight: 700;
-              padding: 6rem 2rem;
-              color: #7d64ff;
-              font-family: 'Montserrat', sans-serif;
-            "
-          >
-          <div>Hola, <b>${user.name.firstName}</b>, hemos recibido el 
-          <strong style="padding: 3px 6px; background-color: #57FFB3;">${testName}</strong>
-          </div>
-          <div style="margin-top: 80px;">Has obtenido una calificación de:
-      <div style="font-size: 2rem; text-align: center;">
-        <strong style="padding: 3px 6px; background-color: #57FFB3;">${grade}</strong>
-        <span role="img" aria-label="${
-          grade < 60 ? "think-face" : "rocket"
-        }"> ${grade < 60 ? "🤔" : "🚀"} </span>
-      </div>
-          </div>
-          </div>
-          <div style="text-align: center; margin: 140px auto 80px auto;">
-            <img
-            width="120px"
-            alt="academo logo is an A in a circle with an arrow"
-            src="https://res.cloudinary.com/dcvnw6hvt/image/upload/v1599179407/Academo/Identidy/academoLogoC_oxeawu.png">
-          </div>
-        </div>
-        </body>
-      </html>`,
-    });
-  };
-
   try {
     const sess = await mongoose.startSession();
     sess.startTransaction();
@@ -182,7 +108,7 @@ const postExam = async (req, res, next) => {
     }
     await user.save({ session: sess }); // ---> Update now with the place
     await sess.commitTransaction(); // ---> Changes will commit
-    sendMail(user);
+    await testMail(user);
     res.status(201).json({ message: "Test accepted" });
   } catch (err) {
     const error = new HttpError(
@@ -214,7 +140,7 @@ const getUserTest = async (req, res, next) => {
 };
 
 // To post a test to a course:
-const postNewTest = async (req, res, next) => { 
+const postNewTest = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const error = new HttpError(
@@ -252,13 +178,13 @@ const postNewTest = async (req, res, next) => {
     evaluation: req.body.evaluation,
     questions: req.body.questions,
   });
-  
+
   try {
-    console.log('in here');
+    console.log("in here");
     await newTest.save();
   } catch (err) {
     console.log(err);
-    
+
     const error = new HttpError(
       "Ha ocurrido un error al crear el test.. 😟",
       422
